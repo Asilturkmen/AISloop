@@ -1,0 +1,18 @@
+# Screenshots of third-party products (Apple and others) stay local.
+# They are used for research and review boards, never published in this repo.
+research/_private/
+
+# Tooling
+node_modules/
+__pycache__/
+*.pyc
+
+# OS / editor
+.DS_Store
+Thumbs.db
+desktop.ini
+.vscode/
+.idea/
+
+# Local agent settings
+.claude/settings.local.json
