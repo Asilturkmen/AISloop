@@ -18,6 +18,7 @@ Each entry says where it came from:
 - **Inside an app** (lists, settings, editors, panels): Apple app language. *(stated; voted: most liked screens)*
 - **Product and landing pages** are in scope too, in an expressive, apple.com-like register: large type, strong imagery, atmosphere. *(stated 2026-11-20; voted: p09 B; follow-ups on the glass hero, Framer, Sparkles, v0)*
 - What was liked in those heroes is the **atmosphere and imagery**, not the template furniture: the generic feature-card grid was retracted on a second look. *(voted: follow-up)*
+- On a landing page the atmosphere usually comes from the **imagery** (illustration or photo), more than from the type or the palette; it varies by product. So a landing page needs a real, product-specific image to carry it, not a generic gradient or glow. *(stated 2026-11-20)*
 
 ## Quality, not style, is what we ban *(stated 2026-11-20)*
 
@@ -77,4 +78,4 @@ The owner asked not to be asked these: AISloop decides them from the kind of pag
 
 ## Questions for the owner
 
-1. In a landing page, what makes the atmosphere work: the illustration or photo itself, the large type on top of it, or the dark palette? (Test on a board with controlled variants.)
+None open.
