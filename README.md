@@ -12,6 +12,8 @@ When an AI agent designs a screen without guidance, it often falls back on the s
 
 AISloop is a set of plain Markdown rules, design tokens and examples that an agent reads before it designs. The aim is for an interface built with AISloop to feel calm, clear and carefully made, the way good Apple software does.
 
+It covers two registers: **app interfaces** (lists, settings, editors, panels) in the language of Apple's own apps, and **product and landing pages** in an expressive register closer to apple.com. In both, what AISloop bans is carelessness, not a style: generic copy, interchangeable layouts, decoration that says nothing, placeholder content and unchecked details. A popular look done with real care is welcome.
+
 ## How it will be used
 
 There is nothing to install. You give the repository to the agent in your project:

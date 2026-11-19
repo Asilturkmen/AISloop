@@ -14,6 +14,8 @@ Bir yapay zekâ ajanı yol gösterilmeden ekran tasarladığında çoğu zaman a
 
 AISloop, ajanın tasarlamadan önce okuduğu kurallardan, tasarım değişkenlerinden (token) ve örneklerden oluşur. Hepsi düz Markdown. Amaç, AISloop ile kurulan arayüzün iyi Apple yazılımları gibi sakin, anlaşılır ve özenli görünmesi.
 
+İki türü kapsar: Apple'ın kendi uygulamalarının dilinde **uygulama arayüzleri** (listeler, ayarlar, editörler, paneller) ve apple.com'a yakın, daha etkileyici bir dilde **ürün ve giriş sayfaları**. İkisinde de AISloop'un yasakladığı şey bir stil değil, özensizliktir: her ürüne uyan boş metinler, birbirinin aynı düzenler, hiçbir şey anlatmayan süsler, yer tutucu içerik ve kontrol edilmemiş ayrıntılar. Popüler bir görünüm gerçek özenle yapılmışsa kabul edilir.
+
 ## Nasıl kullanılacak
 
 Hiçbir şey kurulmaz. Projendeki ajana repoyu verirsin:
