@@ -1,0 +1,12 @@
+﻿{
+  "name": "aisloop-tools",
+  "private": true,
+  "type": "module",
+  "description": "Research and verification tools for AISloop. Uses an installed Chrome or Edge.",
+  "scripts": {
+    "capture": "node capture.mjs"
+  },
+  "dependencies": {
+    "playwright-core": "1.63.0"
+  }
+}

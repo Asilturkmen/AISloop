@@ -28,3 +28,6 @@ A private web page showing options side by side, with like / dislike / unsure an
 
 **D-007 · 2026-11-19 · Web first.**
 Rules are framework-agnostic web (CSS custom properties, with a Tailwind mapping). React Native may be added later as a separate layer.
+
+**D-008 · 2026-11-19 · Apple Design Resources (UI kits) are never opened.**
+The licence (LYL142, 2023-06-21) applies on use, limits use solely to mock-ups for software that runs only on Apple operating systems (§2A), forbids using the resources to create documentation, website content or other work product (§2B) and forbids derivative works (§2D). AISloop is web documentation, so even studying the kits would fall outside the licence. Values come instead from sources whose terms allow it: the public HIG and WWDC sessions, screenshots of Apple's shipping apps (kept private, D-003), the CSS of Apple's public web apps (values as facts, no code copied), Apple's open-source Swift-DocC-Render (Apache 2.0, with attribution), and measurements of the owner's own devices.
