@@ -1,52 +1,96 @@
 # AISloop
 
-**A design rulebook for AI coding agents: build interfaces that feel like Apple software, not like AI slop.**
+**A design rulebook that AI coding agents read before they draw a single pixel, so what they build feels like Apple made it, not like AI made it.**
 
 [Türkçe](README.tr.md)
 
-> **Status: early research.** The rules are not written yet. Nothing here is ready to use.
+> **Status: research phase.** The foundations are researched and measured; the rules an agent follows are being written now. See [Roadmap](#roadmap).
 
-## What this is
+---
 
-When an AI agent designs a screen without guidance, it often falls back on the same look: purple-blue gradients, glass everywhere, sparkle icons, identical rounded cards. People call this "AI slop".
+## The problem
 
-AISloop is a set of plain Markdown rules, design tokens and examples that an agent reads before it designs. The aim is for an interface built with AISloop to feel calm, clear and carefully made, the way good Apple software does.
+Ask an AI agent for an interface and you can usually tell. The same purple-blue gradient. Glass on everything. A sparkle icon next to anything "smart". Six identical rounded cards under a headline that could sell any product. People call it **AI slop**.
 
-It covers two registers: **app interfaces** (lists, settings, editors, panels) in the language of Apple's own apps, and **product and landing pages** in an expressive register closer to apple.com. In both, what AISloop bans is carelessness, not a style: generic copy, interchangeable layouts, decoration that says nothing, placeholder content and unchecked details. A popular look done with real care is welcome.
+The fix is not a longer prompt. An agent needs what a new designer on a good team gets on day one: a rulebook, with reasons and real numbers.
 
-## How it will be used
+## What AISloop is
 
-There is nothing to install. You give the repository to the agent in your project:
+Plain Markdown rules, design tokens and live examples that an agent reads before it designs. No install, no runtime, no framework lock-in.
 
-> Design the settings page using github.com/Asilturkmen/AISloop.
+```
+You:    "Build the settings page using github.com/Asilturkmen/AISloop."
+Agent:  reads AGENTS.md  →  opens only the rules this page needs
+        →  builds with AISloop's tokens  →  checks the result against the checklist
+Result: a page that feels calm, clear and deliberate, like Apple's own software
+```
 
-The agent starts at `AGENTS.md`, reads only the files that the task needs, and follows them unless you say otherwise. If you ask it to use AISloop for the whole project, it adds a `DESIGN.md`, a tokens file and a one-line note to your project. Projects that don't mention AISloop are not affected.
+It covers two registers:
 
-## How it is built
+| | Feels like | For |
+|---|---|---|
+| **App interfaces** | Apple's own apps: Settings, Notes, Mail, Finder, Pages | lists, settings, editors, dashboards, panels |
+| **Product and landing pages** | apple.com: large type, strong imagery, atmosphere | product pages, launches, landing pages |
 
-The rules are not a summary of Apple's guidelines. Each topic goes through the same loop:
+## What makes it different
 
-1. Research real Apple screens, web products that capture the same feel, and counter-examples.
-2. Compare the options side by side and pick by eye.
-3. Write the chosen direction down as a rule with concrete values.
-4. Check the rule by building a live example page from it.
+**It bans carelessness, not styles.**
+Most anti-slop lists ban looks: no glass, no dark heroes, no glows. AISloop doesn't. A trendy look done with care is welcome. What it bans is what makes slop slop:
 
-Every choice is logged with its reason in [`decisions.md`](decisions.md), and the taste behind them is in [`preferences.md`](preferences.md).
-
-## Layout
-
-| Path | Contents |
+| Trash slop | Quality, even when trendy |
 |---|---|
-| `preferences.md` | The taste profile the rules follow |
-| `decisions.md` | Every design decision, with date and reason |
-| `research/` | Research notes and sources; rules are distilled from here |
-| `apple-native/` | Only for apps built solely for Apple platforms (SwiftUI/UIKit). Everything else in the repo is for any project. |
+| Copy that fits any product | Words and imagery only this product could have |
+| The same six cards, the same hero | One strong idea, everything else quiet |
+| Effects added to look impressive | Effects that carry hierarchy or atmosphere |
+| Stock avatars, invented numbers | Real or realistic content, edge cases included |
+| Crowded lines, low contrast, clipped text | Measured alignment, spacing and contrast |
+| Fake macOS windows and traffic lights | Apple's proportions and behaviour, translated honestly |
 
-More folders (foundations, components, patterns, tokens, an agent entry point) will be added once research shows what they need to hold.
+**It is built from evidence, not from memory.**
+- **92 pages** of Apple's Human Interface Guidelines, digested topic by topic with every number Apple gives.
+- **89 official screenshots** of current iOS, iPadOS and macOS apps, **measured pixel by pixel**: row heights, margins, corner radii, colour layers.
+- **Apple's own web apps** (Music, Podcasts, App Store, Maps, Developer) measured live in the browser: the closest thing to "Apple designing for the web".
+- **WWDC sessions** on design principles, Liquid Glass and AI-assisted prototyping.
+
+**It is built from a real taste, not an average.**
+Apple's guidelines say what Apple does; they don't say what you like. Every direction in AISloop goes through a review board where options sit side by side and get voted on by eye. The result lives in [`preferences.md`](preferences.md), and every decision and its reason in [`decisions.md`](decisions.md).
+
+**It translates; it doesn't copy.**
+Apple's fonts, icons and UI kits are licensed for Apple platforms only. AISloop contains none of them. It takes the proportions, hierarchy and behaviour and expresses them in plain web terms: the system font stack, CSS custom properties, an open icon set.
+
+## A few things the research found
+
+- Apple's own web apps use the **macOS type scale** (13 px body), not iOS's 17 px.
+- **Glass belongs to chrome, never to content.** The HIG, the shipping apps and Apple's web CSS all agree.
+- Nested corners follow a rule you can compute: **inner radius = outer radius − padding**, with a floor around 6 px.
+- **One accent per screen**, used on the single most likely action; toolbars and icons stay monochrome.
+- Dark mode in Apple's web apps is **dark grey (#1f1f1f), not black**.
+
+## How it is organised
+
+| Path | What's inside |
+|---|---|
+| [`preferences.md`](preferences.md) | The taste profile every rule follows |
+| [`decisions.md`](decisions.md) | Every decision, dated, with its reason |
+| [`research/`](research/) | The evidence: HIG digest, measurements, sources, vote results |
+| [`tools/`](tools/) | Screenshot tool used for research and for verifying designs |
+| [`apple-native/`](apple-native/) | Only for apps built solely for Apple platforms (SwiftUI/UIKit). Everything else is for any project. |
+
+Foundations, components, patterns, tokens and the `AGENTS.md` entry point arrive as the roadmap moves on.
+
+## Roadmap
+
+| Phase | | Status |
+|---|---|---|
+| 0 | Skeleton, licence, decision log | done |
+| 1 | Taste calibration: research, review board, 51 votes | done |
+| 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | next |
+| 3 | `AGENTS.md` entry point and the final structure | planned |
+| 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | planned |
 
 ## Disclaimer
 
-AISloop is inspired by Apple's design language. It is not affiliated with or endorsed by Apple Inc. It contains no Apple assets: no logos, icons, fonts (such as SF Pro) or screenshots. Product names are used only to refer to the products.
+AISloop is inspired by Apple's design language. It is not affiliated with or endorsed by Apple Inc. It contains no Apple assets: no logos, icons, fonts (such as SF Pro), UI kits or screenshots. Product names are used only to refer to the products.
 
 ## License
 
