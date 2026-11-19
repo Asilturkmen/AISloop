@@ -1,5 +1,7 @@
 # AISloop
 
+![The same settings screen twice. Left: purple gradient, glass cards and sparkles. Right: a calm grouped list with one blue accent.](assets/banner.png)
+
 **A design rulebook that AI coding agents read before they draw a single pixel, so what they build feels like Apple made it, not like AI made it.**
 
 [Türkçe](README.tr.md)

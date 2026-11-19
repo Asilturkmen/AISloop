@@ -1,5 +1,7 @@
 # AISloop
 
+![Aynı ayarlar ekranı iki kez. Solda: mor gradyan, cam kartlar ve parıltılar. Sağda: tek mavi vurgulu sakin, gruplu bir liste.](assets/banner.png)
+
 **Yapay zekâ kodlama ajanlarının daha tek piksel çizmeden okuduğu bir tasarım kural kitabı. Böylece yaptıkları şey yapay zekânın değil, Apple'ın elinden çıkmış gibi görünür.**
 
 [English](README.md)
