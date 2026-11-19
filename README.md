@@ -1,6 +1,6 @@
 # AISloop
 
-![Glowing, scattered interface cards on the left gradually straighten, calm down and settle into one clean grouped list with a single blue toggle on the right.](assets/banner.png)
+![A landing page split by a diagonal band of refracting glass. Behind it, a generic AI hero: neon aurora, sparkles, glowing buttons, identical cards. Past it, the same page refined: misty mountains at dawn, the word AISloop in large white type, one button, and a calm settings card with a single blue toggle.](assets/banner.png)
 
 **A design rulebook that AI coding agents read before they draw a single pixel, so what they build feels like Apple made it, not like AI made it.**
 

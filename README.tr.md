@@ -1,6 +1,6 @@
 # AISloop
 
-![Solda parlayan, dağınık arayüz kartları sağa doğru yavaşça düzleşip sakinleşiyor ve tek mavi anahtarlı, temiz bir gruplu listeye oturuyor.](assets/banner.png)
+![Çapraz bir cam ışık bandıyla ikiye ayrılmış bir giriş sayfası. Bandın gerisinde tipik yapay zekâ girişi: neon aurora, parıltılar, parlayan butonlar, birbirinin aynı kartlar. Bandın geçtiği yerde aynı sayfa rafine edilmiş: şafakta sisli dağlar, büyük beyaz AISloop yazısı, tek buton ve tek mavi anahtarlı sakin bir ayarlar kartı.](assets/banner.png)
 
 **Yapay zekâ kodlama ajanlarının daha tek piksel çizmeden okuduğu bir tasarım kural kitabı. Böylece yaptıkları şey yapay zekânın değil, Apple'ın elinden çıkmış gibi görünür.**
 
