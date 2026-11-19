@@ -40,6 +40,7 @@ Every choice is logged with its reason in [`decisions.md`](decisions.md), and th
 | `preferences.md` | The taste profile the rules follow |
 | `decisions.md` | Every design decision, with date and reason |
 | `research/` | Research notes and sources; rules are distilled from here |
+| `apple-native/` | Only for apps built solely for Apple platforms (SwiftUI/UIKit). Everything else in the repo is for any project. |
 
 More folders (foundations, components, patterns, tokens, an agent entry point) will be added once research shows what they need to hold.
 
