@@ -25,12 +25,12 @@
 const v = (name) => `var(--${name})`;
 
 // A text style: [size, { lineHeight, fontWeight, letterSpacing }]
-const textStyle = (name, { tracking = true } = {}) => [
+const textStyle = (name) => [
   v(`text-${name}-size`),
   {
     lineHeight: v(`text-${name}-leading`),
     fontWeight: v(`text-${name}-weight`),
-    ...(tracking ? { letterSpacing: v(`text-${name}-tracking`) } : {}),
+    letterSpacing: v(`text-${name}-tracking`),
   },
 ];
 
@@ -68,8 +68,15 @@ module.exports = {
           hover: v('color-fill-hover'),
           selected: v('color-fill-selected'),
         },
+        'control-track': v('color-control-track'),
+        'control-thumb': v('color-control-thumb'),
         scrim: v('color-scrim'),
         'media-dim': v('color-media-dim'),
+        // text and scrims on photos and video (same in both themes)
+        'on-media': v('color-on-media'),
+        'on-media-secondary': v('color-on-media-secondary'),
+        'media-scrim': v('color-media-scrim'),
+        'media-scrim-strong': v('color-media-scrim-strong'),
         // red, red-text, ... : fill for small meaningful elements, -text for text
         ...Object.fromEntries(
           palette.map((c) => [c, { DEFAULT: v(`color-${c}`), text: v(`color-${c}-text`) }]),
@@ -117,13 +124,13 @@ module.exports = {
         'display-1': textStyle('display-1'),
         'display-2': textStyle('display-2'),
         'display-3': textStyle('display-3'),
-        lead: textStyle('lead', { tracking: false }),
-        eyebrow: textStyle('eyebrow', { tracking: false }),
+        lead: textStyle('lead'),
+        eyebrow: textStyle('eyebrow'),
       },
 
       // Tailwind's numeric keys keep their usual meaning (1 = 4px) but read
       // the AISloop scale. Named keys carry layout and density-aware spacing:
-      //   px-gutter  gap-controls  gap-borderless  gap-groups  px-row-x  p-group  p-panel
+      //   px-gutter  gap-controls  gap-borderless  gap-groups  px-row-x  py-row-y  p-group  p-panel
       spacing: {
         0.5: v('space-2'),
         1: v('space-4'),
@@ -142,6 +149,7 @@ module.exports = {
         borderless: v('gap-borderless'),
         groups: v('gap-group'),
         'row-x': v('pad-row-x'),
+        'row-y': v('pad-row-y'),
         group: v('pad-group'),
         panel: v('pad-panel'),
       },
@@ -160,6 +168,7 @@ module.exports = {
         icon: v('icon-size'),
         'icon-sm': v('icon-size-sm'),
         'icon-lg': v('icon-size-lg'),
+        switch: v('switch-height'),
       },
       minHeight: {
         hit: v('hit-min'),
@@ -172,6 +181,7 @@ module.exports = {
       width: {
         sidebar: v('sidebar-width'),
         inspector: v('inspector-width'),
+        switch: v('switch-width'),
         icon: v('icon-size'),
         'icon-sm': v('icon-size-sm'),
         'icon-lg': v('icon-size-lg'),
@@ -207,6 +217,7 @@ module.exports = {
         raised: v('shadow-raised'),
         floating: v('shadow-floating'),
         overlay: v('shadow-overlay'),
+        thumb: v('shadow-control-thumb'),          // shadow-thumb (not shadow-control-thumb: that name collides with the colour)
       },
 
       // Focus: use the focus-ring utility (plugin below). outline-focus and

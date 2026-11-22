@@ -8,7 +8,10 @@
        color: var(--color-label); background: var(--color-bg);
    - Theme: follows the system (prefers-color-scheme). A page that offers its
      own toggle sets <html data-theme="light"> or <html data-theme="dark">.
-     Increased contrast (prefers-contrast: more) is handled for both themes.
+     data-theme also works on any element, for a dark island in a light page
+     (a nav over a dark hero, a media band); give that element its own
+     background. Increased contrast (prefers-contrast: more) is handled for
+     both themes.
    - Density: <html data-density="comfortable"> (default, iOS scale, 17px body)
      or data-density="compact" (macOS / Apple-web scale, 13px body).
      The attribute also works on any element, e.g. a compact inspector panel.
@@ -58,7 +61,7 @@
      390px phone and a ~1440px desktop; rem limits keep text zoom working.
      Tight leading for big type (DocC headlines use 1.08-1.15). Weights and
      tracking are ours; to be confirmed on the round-2 board. */
-  --text-display-1-size: clamp(2.75rem, 1.5rem + 5.2vw, 6rem);      /* 44 -> 96px: hero headline */
+  --text-display-1-size: clamp(2.75rem, 1.5rem + 4.6vw, 5.5rem);    /* 44 -> 88px: hero headline (Web: apple.com 70-88) */
   --text-display-1-leading: 1.05;
   --text-display-1-weight: var(--weight-bold);
   --text-display-1-tracking: -0.015em;
@@ -73,9 +76,11 @@
   --text-lead-size: clamp(1.1875rem, 1rem + 0.6vw, 1.5rem);         /* 19 -> 24px: intro paragraph */
   --text-lead-leading: 1.4;
   --text-lead-weight: var(--weight-regular);
+  --text-lead-tracking: -0.01em;
   --text-eyebrow-size: clamp(1rem, 0.9rem + 0.4vw, 1.3125rem);      /* 16 -> 21px: kicker above a headline */
   --text-eyebrow-leading: 1.25;
   --text-eyebrow-weight: var(--weight-semibold);
+  --text-eyebrow-tracking: 0em;
 
   /* Spacing scale (px). Native apps repeat 8, 12, 16, 20; Apple web adds
      2, 4, 24, 32, 48, 64; DocC lays out in 20, 40, 80. Off-scale values
@@ -151,12 +156,26 @@
      use the backdrop value with both backdrop-filter and
      -webkit-backdrop-filter. Web: Apple bars use saturate(180-220%) with
      blur(16-20px), menus blur(50-60px). Ours: bar 20px, menu 40px.
-     Put primary labels and icons on glass; secondary text can drop below
-     4.5:1 when very dark or very bright content passes underneath. */
-  --material-bar: var(--material-bar-tint);
+     On glass keep text at --color-label (and icons monochrome): secondary
+     and accent-coloured text can drop below 4.5:1 when very dark or very
+     bright content passes underneath. */
   --material-bar-backdrop: saturate(180%) blur(20px);
-  --material-menu: var(--material-menu-tint);
   --material-menu-backdrop: saturate(180%) blur(40px);
+
+  /* Text on photos and video (hero images, media bands): the same in both
+     themes, because the image does not change with the theme. Check text
+     against the brightest pixel under it, not the average. The scrims are
+     ours, computed for that worst case (a pure white pixel):
+     - media-scrim (45%): white text 3.4:1, enough for large type only
+       (display headlines);
+     - media-scrim-strong (62%): white 6.2:1, on-media-secondary 5.1:1, for
+       body-size text, links and secondary lines.
+     Not the same as --color-scrim (modal backdrop) or --color-media-dim
+     (behind clear glass controls). */
+  --color-on-media: #ffffff;
+  --color-on-media-secondary: rgb(255 255 255 / 0.86);
+  --color-media-scrim: rgb(0 0 0 / 0.45);
+  --color-media-scrim-strong: rgb(0 0 0 / 0.62);
 }
 
 
@@ -246,6 +265,8 @@
   --icon-size-sm: 18px;
   --icon-size: 22px;
   --icon-size-lg: 28px;
+  --switch-width: 63px;                  /* Native iOS 26: 63 x 28, pill knob ~37 x 24 */
+  --switch-height: 28px;
 
   /* Spacing inside components */
   --pad-row-x: var(--space-16);          /* row padding, separator inset */
@@ -336,6 +357,8 @@
   --icon-size-sm: 14px;
   --icon-size: 16px;
   --icon-size-lg: 20px;
+  --switch-width: 36px;                  /* Native macOS: 36 wide; height raised from 16 to 20 */
+  --switch-height: 20px;                 /* extend the hit area to --hit-min */
 
   --pad-row-x: 10px;                     /* macOS settings rows and separators: 10 */
   --pad-group: 10px;
@@ -352,8 +375,9 @@
   --radius-sheet: var(--radius-3xl);     /* macOS sheet: 25 */
 }
 
-/* Touch input: hit regions grow to 44px in every density, and input text
-   stays at 16px or more so iOS Safari does not zoom into the field. */
+/* Touch input: hit regions grow to 44px in every density, compact rows
+   grow to the touch minimum, and input text stays at 16px or more so iOS
+   Safari does not zoom into the field. */
 @media (pointer: coarse) {
   :root,
   [data-density] {
@@ -361,13 +385,22 @@
   }
   [data-density="compact"] {
     --text-field-size: 1rem;
+    --row-height-dense: 44px;
+    --row-height: 44px;
+    --row-height-sidebar: 44px;
+    --row-height-menu: 44px;
   }
 }
 
-/* Font shorthands, rebuilt wherever density changes:
+/* Rebuilt wherever density changes.
+   Row padding: a row with min-height: var(--row-height) and
+   padding-block: var(--pad-row-y) stays exactly on token whether it holds
+   text or a small control (comfortable 9px, compact 4px, compact on touch
+   10px). Font shorthands:
    font: var(--text-body); letter-spacing: var(--text-body-tracking); */
 :root,
 [data-density] {
+  --pad-row-y: calc((var(--row-height) - var(--control-height-sm)) / 2);
   --text-large-title: var(--text-large-title-weight) var(--text-large-title-size) / var(--text-large-title-leading) var(--font-sans);
   --text-title-1: var(--text-title-1-weight) var(--text-title-1-size) / var(--text-title-1-leading) var(--font-sans);
   --text-title-2: var(--text-title-2-weight) var(--text-title-2-size) / var(--text-title-2-leading) var(--font-sans);
@@ -391,9 +424,11 @@
 /* --------------------------------------------------------------------------
    3. Colour: light theme (default)
    Semantic names only; never use a palette colour where a role exists.
+   Applies to the page and to any element with data-theme="light".
    Contrast of every pair: tokens-rationale.md.
    -------------------------------------------------------------------------- */
-:root {
+:root,
+[data-theme="light"] {
   /* Background layers. Native: grouped page #f2f2f7 with white cards;
      Web: grey page #f5f5f7; macOS sidebar ~#ededed. Light greys keep
      Apple's slight cool tint. */
@@ -431,6 +466,14 @@
   --color-fill-hover: rgb(0 0 0 / 0.05);
   --color-fill-selected: rgb(0 0 0 / 0.08);
 
+  /* Segmented controls and switches: the track, and the thumb that marks
+     the selected segment (also a switch knob). The thumb is always lighter
+     than the track: white with a soft shadow in light, a mid grey in dark
+     (Native iOS: #ffffff on #e3e3e8; dark #6c6c71 on #313136). */
+  --color-control-track: rgb(120 120 128 / 0.2);
+  --color-control-thumb: #ffffff;
+  --shadow-control-thumb: 0 0 0 1px rgb(0 0 0 / 0.04), 0 1px 3px rgb(0 0 0 / 0.12);
+
   /* Accent: one per view, on the background of the main action.
      Apple's #007aff / #0088ff give white text only 4.0 / 3.5:1, so our fill
      is a little deeper (white on it 4.8:1). Links and accent-coloured text
@@ -439,9 +482,6 @@
      (light, dark, both increased-contrast) and re-run the contrast check;
      hover, pressed, tint and focus ring follow. */
   --color-accent: #0a6ee8;
-  --color-accent-hover: color-mix(in srgb, var(--color-accent) 88%, black);
-  --color-accent-pressed: color-mix(in srgb, var(--color-accent) 78%, black);
-  --color-accent-tint: color-mix(in srgb, var(--color-accent) 12%, transparent); /* tinted button background */
   --color-on-accent: #ffffff;
   --color-accent-text: #055fcc;
   --color-focus-ring: var(--color-accent);
@@ -478,34 +518,56 @@
   --shadow-overlay: 0 0 0 1px rgb(0 0 0 / 0.05), 0 12px 40px rgb(0 0 0 / 0.18);
 }
 
-/* A page-level toggle forcing light must also force light form controls
-   and scrollbars under a dark system setting. */
-:root[data-theme="light"] {
+/* Forcing light (page toggle or a light island) also forces light form
+   controls and scrollbars under a dark system setting. */
+[data-theme="light"] {
   color-scheme: light;
+}
+
+/* Derived colours. Declared on the page and on every themed element, so
+   a dark island computes them from its own accent and tints. */
+:root,
+[data-theme] {
+  --color-accent-hover: color-mix(in srgb, var(--color-accent) 88%, black);
+  --color-accent-pressed: color-mix(in srgb, var(--color-accent) 78%, black);
+  --color-accent-tint: color-mix(in srgb, var(--color-accent) 12%, transparent); /* tinted button background */
+  --material-bar: var(--material-bar-tint);
+  --material-menu: var(--material-menu-tint);
+}
+
+/* A themed island re-resolves its text colour (inherited colour is already
+   computed in the parent's theme). Zero specificity: page rules win. */
+:where([data-theme]:not(:root)) {
+  color: var(--color-label);
 }
 
 
 /* --------------------------------------------------------------------------
    4. Colour: dark theme
-   Base is dark grey (Web: Music and Podcasts #1f1f1f), not black; layers
-   above it get lighter (HIG: elevated surfaces are brighter in dark mode).
-   The block appears twice: once for the system setting, once for an
-   explicit data-theme="dark". Keep the two identical.
+   Base is dark grey (Web: Music and Podcasts #1f1f1f), not black. Each
+   layer above it is one even step lighter (HIG: elevated surfaces are
+   brighter in dark mode): page #1f -> sidebar #28 -> cards #30 ->
+   elevated #39 -> group in a group #42. Neighbouring layers differ by
+   about 1.12-1.15:1, so a window, its sidebar and the frame around it
+   stay apart. Never place bg or bg-grouped on bg-secondary: a darker
+   surface inside a lighter one reads as a hole.
+   The block appears twice: once for the system setting, once for
+   data-theme="dark" on the page or any element. Keep the two identical.
    -------------------------------------------------------------------------- */
 @media (prefers-color-scheme: dark) {
   :root:not([data-theme="light"]) {
     color-scheme: dark;
     --color-bg: #1f1f1f;
-    --color-bg-secondary: #2a2a2a;
-    --color-bg-tertiary: #363636;
+    --color-bg-secondary: #303030;
+    --color-bg-tertiary: #424242;
     --color-bg-grouped: #1f1f1f;
-    --color-bg-grouped-item: #2a2a2a;
-    --color-bg-elevated: #2c2c2c;        /* inside it, nest groups with bg-tertiary */
+    --color-bg-grouped-item: #303030;
+    --color-bg-elevated: #393939;        /* inside it, nest groups with bg-tertiary */
     --color-bg-sidebar: #282828;
 
     --color-label: rgb(255 255 255 / 0.92);
     --color-label-secondary: rgb(255 255 255 / 0.64);
-    --color-label-tertiary: rgb(255 255 255 / 0.4);
+    --color-label-tertiary: rgb(255 255 255 / 0.42);
     --color-label-quaternary: rgb(255 255 255 / 0.2);
 
     --color-separator: rgb(255 255 255 / 0.12);
@@ -519,50 +581,57 @@
     --color-fill-hover: rgb(255 255 255 / 0.06);
     --color-fill-selected: rgb(255 255 255 / 0.1);
 
+    --color-control-track: rgb(120 120 128 / 0.24);
+    --color-control-thumb: #636363;
+    --shadow-control-thumb: none;
+
     --color-accent: #0070ee;             /* white on it 4.6:1; as light as that allows */
-    --color-accent-text: #5ca9ff;
+    --color-accent-text: #77b6fe;
     --color-focus-ring: var(--color-accent-text);
 
     /* Fill = HIG 2025 dark value. Text = the fill where it already passes
        4.5:1 on every dark layer, otherwise lightened by us. */
-    --color-red: #ff4245;      --color-red-text: #fd7770;
-    --color-orange: #ff9230;   --color-orange-text: var(--color-orange);
+    --color-red: #ff4245;      --color-red-text: #ff9189;
+    --color-orange: #ff9230;   --color-orange-text: #fe9741;
     --color-yellow: #ffd600;   --color-yellow-text: var(--color-yellow);
     --color-green: #30d158;    --color-green-text: var(--color-green);
     --color-teal: #00d2e0;     --color-teal-text: var(--color-teal);
-    --color-blue: #0091ff;     --color-blue-text: #4da4fd;
-    --color-indigo: #6d7cff;   --color-indigo-text: #8899fd;
-    --color-purple: #db34f2;   --color-purple-text: #eb6bfd;
-    --color-pink: #ff375f;     --color-pink-text: #ff7381;
+    --color-blue: #0091ff;     --color-blue-text: #6eb4fe;
+    --color-indigo: #6d7cff;   --color-indigo-text: #9aabff;
+    --color-purple: #db34f2;   --color-purple-text: #f088ff;
+    --color-pink: #ff375f;     --color-pink-text: #ff9098;
 
     --color-scrim: rgb(0 0 0 / 0.5);
 
     --material-bar-tint: rgb(38 38 38 / 0.72);
     --material-bar-solid: #262626;
-    --material-menu-tint: rgb(44 44 44 / 0.82);
-    --material-menu-solid: #2c2c2c;
+    --material-menu-tint: rgb(57 57 57 / 0.82);
+    --material-menu-solid: #393939;
 
     /* Dark keeps or raises shadow alpha (Web); a faint light rim marks the
-       edge of floating surfaces. */
+       edge of every floating surface, which a dark shadow cannot. */
     --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.3);
-    --shadow-floating: 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
+    --shadow-floating: 0 0 0 1px rgb(255 255 255 / 0.06), 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
     --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 40px rgb(0 0 0 / 0.55);
   }
 }
 
-:root[data-theme="dark"] {
+/* :root[data-theme="dark"] is listed for specificity: on the page element
+   it must outrank the light increased-contrast block below. */
+:root[data-theme="dark"],
+[data-theme="dark"] {
   color-scheme: dark;
   --color-bg: #1f1f1f;
-  --color-bg-secondary: #2a2a2a;
-  --color-bg-tertiary: #363636;
+  --color-bg-secondary: #303030;
+  --color-bg-tertiary: #424242;
   --color-bg-grouped: #1f1f1f;
-  --color-bg-grouped-item: #2a2a2a;
-  --color-bg-elevated: #2c2c2c;
+  --color-bg-grouped-item: #303030;
+  --color-bg-elevated: #393939;
   --color-bg-sidebar: #282828;
 
   --color-label: rgb(255 255 255 / 0.92);
   --color-label-secondary: rgb(255 255 255 / 0.64);
-  --color-label-tertiary: rgb(255 255 255 / 0.4);
+  --color-label-tertiary: rgb(255 255 255 / 0.42);
   --color-label-quaternary: rgb(255 255 255 / 0.2);
 
   --color-separator: rgb(255 255 255 / 0.12);
@@ -576,29 +645,33 @@
   --color-fill-hover: rgb(255 255 255 / 0.06);
   --color-fill-selected: rgb(255 255 255 / 0.1);
 
+  --color-control-track: rgb(120 120 128 / 0.24);
+  --color-control-thumb: #636363;
+  --shadow-control-thumb: none;
+
   --color-accent: #0070ee;
-  --color-accent-text: #5ca9ff;
+  --color-accent-text: #77b6fe;
   --color-focus-ring: var(--color-accent-text);
 
-  --color-red: #ff4245;      --color-red-text: #fd7770;
-  --color-orange: #ff9230;   --color-orange-text: var(--color-orange);
+  --color-red: #ff4245;      --color-red-text: #ff9189;
+  --color-orange: #ff9230;   --color-orange-text: #fe9741;
   --color-yellow: #ffd600;   --color-yellow-text: var(--color-yellow);
   --color-green: #30d158;    --color-green-text: var(--color-green);
   --color-teal: #00d2e0;     --color-teal-text: var(--color-teal);
-  --color-blue: #0091ff;     --color-blue-text: #4da4fd;
-  --color-indigo: #6d7cff;   --color-indigo-text: #8899fd;
-  --color-purple: #db34f2;   --color-purple-text: #eb6bfd;
-  --color-pink: #ff375f;     --color-pink-text: #ff7381;
+  --color-blue: #0091ff;     --color-blue-text: #6eb4fe;
+  --color-indigo: #6d7cff;   --color-indigo-text: #9aabff;
+  --color-purple: #db34f2;   --color-purple-text: #f088ff;
+  --color-pink: #ff375f;     --color-pink-text: #ff9098;
 
   --color-scrim: rgb(0 0 0 / 0.5);
 
   --material-bar-tint: rgb(38 38 38 / 0.72);
   --material-bar-solid: #262626;
-  --material-menu-tint: rgb(44 44 44 / 0.82);
-  --material-menu-solid: #2c2c2c;
+  --material-menu-tint: rgb(57 57 57 / 0.82);
+  --material-menu-solid: #393939;
 
   --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.3);
-  --shadow-floating: 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
+  --shadow-floating: 0 0 0 1px rgb(255 255 255 / 0.06), 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
   --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 40px rgb(0 0 0 / 0.55);
 }
 
@@ -607,11 +680,12 @@
    5. Increased contrast (prefers-contrast: more), both themes
    HIG: every colour has an increased-contrast variant. Labels and lines get
    stronger, tertiary text reaches 4.5:1, accent and palette text reach
-   7:1, palette fills switch to the HIG increased-contrast column, glass
-   turns opaque (section 6).
+   7:1, palette fills switch to the HIG increased-contrast column, floating
+   surfaces get a visible rim, glass turns opaque (section 6).
    -------------------------------------------------------------------------- */
 @media (prefers-contrast: more) {
-  :root {
+  :root,
+  [data-theme="light"] {
     --color-label: rgb(0 0 0 / 1);
     --color-label-secondary: rgb(0 0 0 / 0.72);
     --color-label-tertiary: rgb(0 0 0 / 0.6);
@@ -621,6 +695,8 @@
     --color-border-control: rgb(0 0 0 / 0.6);
     --color-fill-hover: rgb(0 0 0 / 0.08);
     --color-fill-selected: rgb(0 0 0 / 0.14);
+    --color-control-track: rgb(120 120 128 / 0.32);
+    --shadow-control-thumb: 0 0 0 1px rgb(0 0 0 / 0.3), 0 1px 3px rgb(0 0 0 / 0.12);
     --color-accent: #0259c2;             /* white on it 6.5:1 */
     --color-accent-text: #0449a0;
     --color-red: #e9152d;      --color-red-text: #9f061a;
@@ -632,6 +708,7 @@
     --color-indigo: #564ade;   --color-indigo-text: #4631c6;
     --color-purple: #b02fc2;   --color-purple-text: #870797;
     --color-pink: #e7124d;     --color-pink-text: #9e0431;
+    --shadow-floating: 0 0 0 1px rgb(0 0 0 / 0.3), 0 2px 6px rgb(0 0 0 / 0.06), 0 10px 30px rgb(0 0 0 / 0.1);
     --shadow-overlay: 0 0 0 1px rgb(0 0 0 / 0.3), 0 12px 40px rgb(0 0 0 / 0.18);
   }
 }
@@ -647,23 +724,28 @@
     --color-border-control: rgb(255 255 255 / 0.6);
     --color-fill-hover: rgb(255 255 255 / 0.1);
     --color-fill-selected: rgb(255 255 255 / 0.18);
+    --color-control-track: rgb(120 120 128 / 0.32);
+    --color-control-thumb: #7a7a7a;
+    --shadow-control-thumb: 0 0 0 1px rgb(255 255 255 / 0.3);
     --color-accent: #0070ee;             /* unchanged: darker would lose 3:1 against the page */
-    --color-accent-text: #9ccaff;
-    --color-red: #ff6165;      --color-red-text: #feb2ae;
-    --color-orange: #ffa056;   --color-orange-text: #ffb681;
+    --color-accent-text: #bedcff;
+    --color-red: #ff6165;      --color-red-text: #ffcbc8;
+    --color-orange: #ffa056;   --color-orange-text: #feceac;
     --color-yellow: #fedf43;   --color-yellow-text: var(--color-yellow);
-    --color-green: #4ad968;    --color-green-text: #52e06e;
-    --color-teal: #3bddec;     --color-teal-text: var(--color-teal);
-    --color-blue: #5cb8ff;     --color-blue-text: #8eccff;
-    --color-indigo: #a7aaff;   --color-indigo-text: #bdc1fe;
-    --color-purple: #ea8dff;   --color-purple-text: #f0aeff;
-    --color-pink: #ff8ac4;     --color-pink-text: #feaed3;
+    --color-green: #4ad968;    --color-green-text: #67f380;
+    --color-teal: #3bddec;     --color-teal-text: #50ecfb;
+    --color-blue: #5cb8ff;     --color-blue-text: #b5ddff;
+    --color-indigo: #a7aaff;   --color-indigo-text: #d2d5ff;
+    --color-purple: #ea8dff;   --color-purple-text: #f5c9ff;
+    --color-pink: #ff8ac4;     --color-pink-text: #ffc9e1;
+    --shadow-floating: 0 0 0 1px rgb(255 255 255 / 0.3), 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
     --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.3), 0 12px 40px rgb(0 0 0 / 0.55);
   }
 }
 
 @media (prefers-contrast: more) {
-  :root[data-theme="dark"] {
+  :root[data-theme="dark"],
+  [data-theme="dark"] {
     --color-label: rgb(255 255 255 / 1);
     --color-label-secondary: rgb(255 255 255 / 0.78);
     --color-label-tertiary: rgb(255 255 255 / 0.62);
@@ -673,17 +755,21 @@
     --color-border-control: rgb(255 255 255 / 0.6);
     --color-fill-hover: rgb(255 255 255 / 0.1);
     --color-fill-selected: rgb(255 255 255 / 0.18);
+    --color-control-track: rgb(120 120 128 / 0.32);
+    --color-control-thumb: #7a7a7a;
+    --shadow-control-thumb: 0 0 0 1px rgb(255 255 255 / 0.3);
     --color-accent: #0070ee;
-    --color-accent-text: #9ccaff;
-    --color-red: #ff6165;      --color-red-text: #feb2ae;
-    --color-orange: #ffa056;   --color-orange-text: #ffb681;
+    --color-accent-text: #bedcff;
+    --color-red: #ff6165;      --color-red-text: #ffcbc8;
+    --color-orange: #ffa056;   --color-orange-text: #feceac;
     --color-yellow: #fedf43;   --color-yellow-text: var(--color-yellow);
-    --color-green: #4ad968;    --color-green-text: #52e06e;
-    --color-teal: #3bddec;     --color-teal-text: var(--color-teal);
-    --color-blue: #5cb8ff;     --color-blue-text: #8eccff;
-    --color-indigo: #a7aaff;   --color-indigo-text: #bdc1fe;
-    --color-purple: #ea8dff;   --color-purple-text: #f0aeff;
-    --color-pink: #ff8ac4;     --color-pink-text: #feaed3;
+    --color-green: #4ad968;    --color-green-text: #67f380;
+    --color-teal: #3bddec;     --color-teal-text: #50ecfb;
+    --color-blue: #5cb8ff;     --color-blue-text: #b5ddff;
+    --color-indigo: #a7aaff;   --color-indigo-text: #d2d5ff;
+    --color-purple: #ea8dff;   --color-purple-text: #f5c9ff;
+    --color-pink: #ff8ac4;     --color-pink-text: #ffc9e1;
+    --shadow-floating: 0 0 0 1px rgb(255 255 255 / 0.3), 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
     --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.3), 0 12px 40px rgb(0 0 0 / 0.55);
   }
 }
@@ -696,7 +782,8 @@
    never sit on an unblurred translucent layer.
    -------------------------------------------------------------------------- */
 @media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
-  :root {
+  :root,
+  [data-theme] {
     --material-bar: var(--material-bar-solid);
     --material-bar-backdrop: none;
     --material-menu: var(--material-menu-solid);
@@ -705,7 +792,8 @@
 }
 
 @supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
-  :root {
+  :root,
+  [data-theme] {
     --material-bar: var(--material-bar-solid);
     --material-bar-backdrop: none;
     --material-menu: var(--material-menu-solid);

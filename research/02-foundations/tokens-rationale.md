@@ -1,6 +1,6 @@
 # Token rationale: where every value in `tokens/tokens.css` comes from
 
-Phase 2, step 1 (see [PLAN.md](PLAN.md)). Drafted 2026-11-22. This file explains the token draft group by group, records the contrast check, recommends an icon set and lists the taste questions for the round-2 board. The tokens are a draft until the board and the example page have tested them.
+Phase 2, step 1 (see [PLAN.md](PLAN.md)). Drafted 2026-11-22; revised the same day after [critique-1.md](critique-1.md) (what changed and why: §10). This file explains the token draft group by group, records the contrast check, recommends an icon set and lists the taste questions for the round-2 board. The tokens are a draft until the board and the example page have tested them.
 
 Files: [`tokens/tokens.css`](../../tokens/tokens.css) (the values), [`tokens/tailwind.preset.js`](../../tokens/tailwind.preset.js) (Tailwind mapping, `var()` references only).
 
@@ -27,7 +27,8 @@ Unit assumption (from the HIG digest): 1 Apple pt = 1 CSS px. Type is in rem (16
 | Decision | Value | Source | Why |
 |---|---|---|---|
 | Format | Plain CSS custom properties, no build step; Tailwind preset reads them via `var()` | D-007 | Framework-agnostic web first; one source of truth |
-| Theme switch | Light on `:root`; dark under `@media (prefers-color-scheme: dark)` on `:root:not([data-theme="light"])`, repeated on `:root[data-theme="dark"]`; `:root[data-theme="light"]` forces `color-scheme: light` | HIG (follow the system), Owner (theme follows system; a project may add a toggle), DocC (Light/Dark/Auto with Auto default) | The system wins by default; a page toggle still works in both directions. The check found that without the explicit `color-scheme: light`, a forced-light page under a dark system would draw dark form controls and scrollbars, so that rule was added. |
+| Theme switch | Light on `:root` and on any `[data-theme="light"]`; dark under `@media (prefers-color-scheme: dark)` on `:root:not([data-theme="light"])`, repeated on any `[data-theme="dark"]`; `[data-theme="light"]` forces `color-scheme: light` | HIG (follow the system), Owner (theme follows system; a project may add a toggle), DocC (Light/Dark/Auto with Auto default) | The system wins by default; a page toggle still works in both directions. The check found that without the explicit `color-scheme: light`, a forced-light page under a dark system would draw dark form controls and scrollbars, so that rule was added. |
+| Theme islands | `data-theme` works on any element, like `data-density` (critique T-M1). Derived colours (accent hover, pressed, tint; glass) are declared on `:root, [data-theme]` so an island computes them from its own accent. `:where([data-theme]:not(:root)) { color: var(--color-label) }` re-resolves the island's text colour with zero specificity. `:root[data-theme="dark"]` is listed beside `[data-theme="dark"]` only for specificity, so the light increased-contrast block cannot win on the page element. | Web (apple.com gives a local nav the dark look over dark heroes); DocC (a "dark island" token set for heroes and video modals) | A nav over a dark hero, a dark media band or a dark product tile, inside a light page. Verified: a dark island under a light system and a light island under a dark system resolve all 59 colour tokens (derived included) exactly like the full theme, with and without increased contrast, with the right `color-scheme` and text colour. An island still needs its own background. |
 | Increased contrast | `@media (prefers-contrast: more)` for light, for system dark and for forced dark | HIG (four variants per colour) | Apple defines light, dark, IC light, IC dark for every colour; DocC ships none, the Apple web apps ship all four |
 | Density | `:root` and `[data-density="comfortable"]` = iOS scale; `[data-density="compact"]` = macOS / Apple-web scale. Works on any element (e.g. a compact inspector inside a comfortable page). Font shorthands are rebuilt on `[data-density]` so nested densities resolve correctly (verified). | Owner (two presets, a project picks one) | Density is per project, not global (p01) |
 | **Default density** | **Comfortable** | INFERRED | It is the only preset that is safe without knowing the project: it works with touch and at phone width, its 17 px body matches iOS Body and Apple's long-form web text (DocC 17/25), and it survives 200% zoom. Compact (13 px) is excellent for dense desktop tools with a fine pointer, which is exactly where Apple's own desktop web apps use it, but on a phone, or rendered in Segoe UI or Roboto instead of SF, 13 px reads small. So compact is a deliberate project choice, not the fallback. |
@@ -86,11 +87,11 @@ Measured in Edge at 390 px and 1440 px viewports.
 
 | Token | Value | 390 px → 1440 px | Leading · weight | Source | Why |
 |---|---|---|---|---|---|
-| `--text-display-1-*` | `clamp(2.75rem, 1.5rem + 5.2vw, 6rem)` | 44 → 96 px | 1.05 · 700 | Web: apple.com headlines 70–88 px; DocC headline 48/52 → 32/36 (leading 1.08) | Hero headline. Size range INFERRED, to be set on the board. |
+| `--text-display-1-*` | `clamp(2.75rem, 1.5rem + 4.6vw, 5.5rem)` | 44 → 88 px | 1.05 · 700 | Web: apple.com headlines 70–88 px; DocC headline 48/52 → 32/36 (leading 1.08) | Hero headline. Maximum lowered from 96 to 88 px to stay inside Apple's measured range (critique T-m3: at 96 px in Segoe UI Bold the headline turned blunt and needed three lines). Still a board question. |
 | `--text-display-2-*` | `clamp(2rem, 1.25rem + 3vw, 4rem)` | 32 → 63 px | 1.08 · 700 | DocC heading scale 32–48 | Section headline |
 | `--text-display-3-*` | `clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem)` | 24 → 40 px | 1.15 · 600 | DocC h3 28/32, card titles semibold | Sub-section, tile headline |
-| `--text-lead-*` | `clamp(1.1875rem, 1rem + 0.6vw, 1.5rem)` | 19 → 24 px | 1.4 · 400 | DocC intro 21/29, 19/27 small | Intro paragraph under a headline |
-| `--text-eyebrow-*` | `clamp(1rem, 0.9rem + 0.4vw, 1.3125rem)` | 16 → 20 px | 1.25 · 600 | DocC eyebrow 19–21 px | Kicker above a headline |
+| `--text-lead-*` | `clamp(1.1875rem, 1rem + 0.6vw, 1.5rem)`, tracking −0.01em | 19 → 24 px | 1.4 · 400 | DocC intro 21/29, 19/27 small; tracking INFERRED | Intro paragraph under a headline. Tracking token added so every style ships one (critique T-m2). |
+| `--text-eyebrow-*` | `clamp(1rem, 0.9rem + 0.4vw, 1.3125rem)`, tracking 0 | 16 → 20 px | 1.25 · 600 | DocC eyebrow 19–21 px | Kicker above a headline |
 
 The rem term in every `clamp()` keeps WCAG 1.4.4 text resize working (a pure `vw` size would ignore zoom).
 
@@ -105,20 +106,22 @@ All values are ours unless the source column says otherwise; they were tuned wit
 | Token | Light | Dark | Source | Why |
 |---|---|---|---|---|
 | `--color-bg` | #ffffff | **#1f1f1f** | Web (Music, Podcasts page #1f1f1f); Owner (layered dark greys, not black, as default) | Page and window content. Black is kept for the board (§7). |
-| `--color-bg-secondary` | #f5f5f7 | #2a2a2a | Web (App Store page #f5f5f7); Native (macOS settings box #f7f7f7 on white) | A box or inset group on the page |
-| `--color-bg-tertiary` | #ebebf0 | #363636 | INFERRED (one step further on each ladder) | A group inside a group; in dark, groups inside sheets |
+| `--color-bg-secondary` | #f5f5f7 | **#303030** | Web (App Store page #f5f5f7); Native (macOS settings box #f7f7f7 on white; iOS dark card #2c2c2e on #1c1c1e) | A box or inset group on the page |
+| `--color-bg-tertiary` | #ebebf0 | **#424242** | INFERRED (one step further on each ladder) | A group inside a group; in dark, groups inside sheets |
 | `--color-bg-grouped` | #f2f2f7 | #1f1f1f | Native (iOS grouped page #f2f2f7; in iOS dark, grouped and plain page are the same colour) | Page behind inset-grouped lists |
-| `--color-bg-grouped-item` | #ffffff | #2a2a2a | Native (white cards; #2c2c2e on #1c1c1e dark) | The cards on a grouped page |
-| `--color-bg-elevated` | #ffffff | #2c2c2c | HIG (elevated surfaces are brighter in dark mode); values INFERRED | Sheets, popovers, menus, dialogs |
-| `--color-bg-sidebar` | #f0f0f3 | #282828 | Native (macOS sidebar #ededed light, #292929 dark; iPad #f1f2f3) | Opaque sidebar; wallpaper tint deliberately left out |
+| `--color-bg-grouped-item` | #ffffff | **#303030** | Native (white cards; #2c2c2e on #1c1c1e dark) | The cards on a grouped page |
+| `--color-bg-elevated` | #ffffff | **#393939** | HIG (elevated surfaces are brighter in dark mode); values INFERRED | Sheets, popovers, menus, dialogs |
+| `--color-bg-sidebar` | #f0f0f3 | #282828 | Native (macOS sidebar #ededed light, #292929 dark against content #1e1e1e; iPad #f1f2f3) | Opaque sidebar; wallpaper tint deliberately left out |
+
+**Dark ladder (revised after critique T-M2).** The first draft packed sidebar, cards and elevated surfaces into #282828–#2c2c2c, 1.00–1.03:1 apart, so a window, its sidebar and the frame around it merged. The ladder now climbs in even steps of about 0.035 in OKLab lightness: page #1f1f1f → sidebar #282828 → cards #303030 → elevated #393939 → group-in-a-group #424242, each neighbour 1.12–1.15:1 from the next (similar to Apple's own gaps: iOS card on page #1c1c1e → #2c2c2e, macOS content → sidebar #1e1e1e → #292929). Rule in the CSS comments: in dark mode never place `bg` or `bg-grouped` on `bg-secondary`; a darker surface inside a lighter one reads as a hole.
 
 ### 3.2 Labels
 
 | Token | Light | Dark | IC light | IC dark | Source | Why |
 |---|---|---|---|---|---|---|
-| `--color-label` | black 88% | white 92% | black 100% | white 100% | Web (Chromium branch 88% / 92%; IC 100%) | ≥ 14:1 light, ≥ 10.5:1 dark on every layer |
+| `--color-label` | black 88% | white 92% | black 100% | white 100% | Web (Chromium branch 88% / 92%; IC 100%) | ≥ 14:1 light, ≥ 8.8:1 dark on every layer (above the HIG 7:1 target) |
 | `--color-label-secondary` | black **58%** | white 64% | black 72% | white 78% | Web (56% / 64%); raised by us | Apple's Safari value (50%) is 3.95:1 and fails; 56% fails on the grey layers. 58% passes 4.5:1 on every layer, including hover and selection fills (min 4.86). |
-| `--color-label-tertiary` | black 45% | white 40% | black 60% | white 62% | Web (48% / 40%); INFERRED | ≥ 3:1 everywhere. **Non-essential text only**: disabled controls, unavailable items (HIG Labels page), decorative metadata. Not for placeholders that carry meaning. In IC it reaches 4.5:1. |
+| `--color-label-tertiary` | black 45% | white **42%** | black 60% | white 62% | Web (48% / 40%); INFERRED | ≥ 3:1 everywhere. **Non-essential text only**: disabled controls, unavailable items (HIG Labels page), decorative metadata. Not for placeholders that carry meaning. In IC it reaches 4.5:1. |
 | `--color-label-quaternary` | black 22% | white 20% | black 40% | white 40% | HIG (watermark text); INFERRED values | ~1.7–1.9:1. Watermarks and decoration only, never information. |
 
 Alpha labels (instead of opaque greys) keep the same relationship on every layer, which is why the Apple web apps use them.
@@ -138,6 +141,9 @@ Alpha labels (instead of opaque greys) keep the same relationship on every layer
 | `--color-fill` … `-quaternary` | rgb(120 120 128) at 20 / 16 / 12 / 8% | same grey at 36 / 30 / 24 / 18% | Web (Maps fills 8 / 12 / 16%, segmented track 12% / 24%); strongest step and dark steps INFERRED | Tracks, grey buttons, segmented controls, value capsules |
 | `--color-fill-hover` | black 5% | white 6% | Web (Music rows 6%, Maps 4%) | Row and button hover; IC 8% / 10% |
 | `--color-fill-selected` | black 8% | white 10% | Web (Music 4%, App Store 10%); Native (Finder #e2e2e2 on #ededed) | Neutral (grey) selection; the accent selection uses `--color-accent`. Which one is per project (p06). IC 14% / 18%. |
+| `--color-control-track` | rgb(120 120 128) at 20% | same grey at 24% | Native (iOS segmented track #e3e3e8 light; switch off-track #e4e4e4 light, #3b3b3d dark); Web (segmented track 12% / 24%) | Track of a segmented control, off-track of a switch. IC 32%. (Critique T-M3.) |
+| `--color-control-thumb` | #ffffff | **#636363** | Native (iOS thumb #ffffff light, #6c6c71 dark); critique suggested #636366 | Selected segment, switch knob. Always lighter than the track: in dark the first draft's pages fell back to the card colour, which was darker than the track and read as a hole. Neutral #636363 instead of #636366 to keep the dark ladder one hue. Dark thumb against track: 2.06 / 1.69 / 1.52:1 on page / card / elevated (required ≥ 1.4 and lighter, our threshold; the selected segment also gets the heavier label weight). IC dark #7a7a7a. |
+| `--shadow-control-thumb` | 1px ring 4% + 0 1px 3px 12% | none | Native (light thumbs carry a soft shadow; dark ones do not) | Light: the white thumb on a pale track (1.27:1) is drawn by its shadow, as on iOS. IC light raises the ring to 30%; IC dark adds a 30% white ring. |
 
 ### 3.5 Accent, focus
 
@@ -147,8 +153,9 @@ Alpha labels (instead of opaque greys) keep the same relationship on every layer
 | `--color-accent-hover` / `-pressed` | accent mixed 12% / 22% with black | same rule | — | — | Web (App Store rollover and pressed are darker); INFERRED | `color-mix()` so they follow any rebrand. White text gets stronger (5.7–9.1:1). |
 | `--color-accent-tint` | accent at 12% | same rule | — | — | Web (tinted "View" button 6–10%) | Background of a tinted (secondary) button |
 | `--color-on-accent` | #ffffff | #ffffff | — | — | — | Text and icons on the accent fill |
-| `--color-accent-text` | **#055fcc** | **#5ca9ff** | #0449a0 | #9ccaff | Web (docs links #0066cc / #2997ff); INFERRED values | Links and accent-coloured text. ≥ 5.0:1 light, ≥ 4.9:1 dark on every layer and on the tint; ≥ 7:1 in IC. |
+| `--color-accent-text` | **#055fcc** | **#77b6fe** | #0449a0 | #bedcff | Web (docs links #0066cc / #2997ff); INFERRED values | Links and accent-coloured text. ≥ 5.0:1 light, ≥ 4.7:1 dark on every layer (lightened from #5ca9ff for the lighter #424242 layer) and on the tint; ≥ 7:1 in IC. Not for text on glass (critique: 3.2–4.1:1 over dark content); keep glass text at `--color-label`. |
 | `--color-focus-ring` | = accent | = accent-text | = accent | = accent-text | Web (ring in the accent); WCAG 1.4.11 | ≥ 4.0:1 against every layer |
+| Accent fill as a UI shape | | | | | WCAG 1.4.11 | **Revised.** Required ≥ 3:1 against the page and the sidebar, where the fill alone marks a selection (selected sidebar row, prominent button): light 4.76 / 4.19, dark 3.57 / 3.20. On cards and elevated surfaces in dark it is now 2.86 / 2.50 (2.18 on tertiary): white text on the accent can only pass 4.5:1 if the accent stays dark, and the spread ladder made those surfaces lighter, so both cannot hold. There the state is carried by the indicator on the fill (white switch knob, check mark or label, 4.61:1 on the fill), which is what WCAG 1.4.11 asks for; the fill-against-surface ratio is reported as info. A rebrand with a lighter accent would need dark text on it. |
 | `--focus-ring-width` / `-offset` | 3 px / 2 px | | | | Web (4 px ring at 60% alpha); DocC (keyboard-only rings); INFERRED | Apple's 60%-alpha ring is 2.3:1 on white. A solid ring with a 2 px gap passes 3:1 and stays visible around an accent-filled button. Use with `:focus-visible`. |
 
 ### 3.6 Meaningful colours
@@ -157,17 +164,17 @@ Fill = HIG 2025 system colour (VERIFIED values). Text = ours: the HIG hue moved 
 
 | Colour | Fill light · dark | Text light · dark | Fill IC light · dark | Text IC light · dark |
 |---|---|---|---|---|
-| red | #ff383c · #ff4245 | #d30725 · #fd7770 | #e9152d · #ff6165 | #9f061a · #feb2ae |
-| orange | #ff8d28 · #ff9230 | #b04a03 · = fill | #c55300 · #ffa056 | #843603 · #ffb681 |
+| red | #ff383c · #ff4245 | #d30725 · #ff9189 | #e9152d · #ff6165 | #9f061a · #ffcbc8 |
+| orange | #ff8d28 · #ff9230 | #b04a03 · #fe9741 | #c55300 · #ffa056 | #843603 · #feceac |
 | yellow | #ffcc00 · #ffd600 | #905f05 · = fill | #a16a00 · #fedf43 | #6c4603 · = fill |
-| green | #34c759 · #30d158 | #057a2d · = fill | #008932 · #4ad968 | #035b20 · #52e06e |
-| teal | #00c3d0 · #00d2e0 | #057388 · = fill | #008198 · #3bddec | #035565 · = fill |
-| blue | #0088ff · #0091ff | #0c60e5 · #4da4fd | #1e6ef4 · #5cb8ff | #0246b0 · #8eccff |
-| indigo | #6155f5 · #6d7cff | #564ade · #8899fd | #564ade · #a7aaff | #4631c6 · #bdc1fe |
-| purple | #cb30e0 · #db34f2 | #ac2abe · #eb6bfd | #b02fc2 · #ea8dff | #870797 · #f0aeff |
-| pink | #ff2d55 · #ff375f | #d10443 · #ff7381 | #e7124d · #ff8ac4 | #9e0431 · #feaed3 |
+| green | #34c759 · #30d158 | #057a2d · = fill | #008932 · #4ad968 | #035b20 · #67f380 |
+| teal | #00c3d0 · #00d2e0 | #057388 · = fill | #008198 · #3bddec | #035565 · #50ecfb |
+| blue | #0088ff · #0091ff | #0c60e5 · #6eb4fe | #1e6ef4 · #5cb8ff | #0246b0 · #b5ddff |
+| indigo | #6155f5 · #6d7cff | #564ade · #9aabff | #564ade · #a7aaff | #4631c6 · #d2d5ff |
+| purple | #cb30e0 · #db34f2 | #ac2abe · #f088ff | #b02fc2 · #ea8dff | #870797 · #f5c9ff |
+| pink | #ff2d55 · #ff375f | #d10443 · #ff9098 | #e7124d · #ff8ac4 | #9e0431 · #ffc9e1 |
 
-Why: HIG light colours are fills, not text colours (only indigo reaches 4.5:1 on white); several HIG dark colours fail on our grey layers (red 3.5, purple 3.3 on #363636). Owner: colour that carries meaning in small elements is liked, colour as a page wash is not; so these are for tags, events, status dots and charts. Mint, cyan and brown were left out to keep the brief's nine; they can be added the same way. The palette blue is for meaning; interaction uses the accent.
+Why: HIG light colours are fills, not text colours (only indigo reaches 4.5:1 on white); several HIG dark colours fail on our grey layers. The dark text values were lightened again after the ladder was spread (the #424242 layer is the binding one), so in dark mode they are paler than the fills; the fills stay HIG-saturated. Owner: colour that carries meaning in small elements is liked, colour as a page wash is not; so these are for tags, events, status dots and charts. Mint, cyan and brown were left out to keep the brief's nine; they can be added the same way. The palette blue is for meaning; interaction uses the accent.
 
 ### 3.7 Overlays
 
@@ -175,6 +182,10 @@ Why: HIG light colours are fills, not text colours (only indigo reaches 4.5:1 on
 |---|---|---|---|---|
 | `--color-scrim` | black 40% | black 50% | DocC 0.4, Web 0.45 | Behind modal sheets; dark needs more to read over a grey page (INFERRED) |
 | `--color-media-dim` | black 35% | black 35% | HIG (35% dark dimming behind clear glass over bright media) | Only for controls floating over photos and video |
+| `--color-on-media` | #ffffff | same | critique T-m1 | Text on photos and video; the image does not change with the theme, so neither does this |
+| `--color-on-media-secondary` | white 86% | same | critique T-m1 | Secondary lines on media |
+| `--color-media-scrim` | black 45% | same | critique T-m1; INFERRED | Under **large** text on a photo: white over a 45% scrim on a pure white pixel is 3.35:1 (passes 3:1 for large text only) |
+| `--color-media-scrim-strong` | black 62% | same | INFERRED (computed) | Under body-size text, links and secondary lines: white 6.20:1 and white 86% 5.10:1 even over a pure white pixel. Added because the critique's single 45% scrim leaves secondary text at 2.9:1 over bright pixels (its own P-B3 failure). Text on media is checked against the brightest pixel under it. |
 
 ---
 
@@ -186,20 +197,20 @@ Why: HIG light colours are fills, not text colours (only indigo reaches 4.5:1 on
 |---|---|---|---|---|
 | `--material-bar` (tint) | rgb(250 250 252 / 0.72) | rgb(38 38 38 / 0.72) | Owner (start from Apple web, about `saturate(180%) blur(20px)`); Web (bars 55–80% tint); DocC (70%) | Top bars, toolbars, tab bars |
 | `--material-bar-backdrop` | `saturate(180%) blur(20px)` | same | Owner, DocC, Web (marketing local nav) | |
-| `--material-menu` (tint) | rgb(246 246 248 / 0.82) | rgb(44 44 44 / 0.82) | Web (menus 70–72% with blur 50–60 px); INFERRED (thicker for legibility) | Menus, popovers, floating sidebars: surfaces that hold more text (HIG: thicker material where text sits) |
+| `--material-menu` (tint) | rgb(246 246 248 / 0.82) | rgb(57 57 57 / 0.82) (follows the new elevated #393939) | Web (menus 70–72% with blur 50–60 px); INFERRED (thicker for legibility) | Menus, popovers, floating sidebars: surfaces that hold more text (HIG: thicker material where text sits) |
 | `--material-menu-backdrop` | `saturate(180%) blur(40px)` | same | Web (50–60 px); INFERRED | |
-| `--material-*-solid` | #fafafc / #f6f6f8 | #262626 / #2c2c2c | Web (every material has an opaque fallback) | Used automatically under `prefers-reduced-transparency: reduce`, `prefers-contrast: more`, and when `backdrop-filter` is unsupported (verified in Edge) |
+| `--material-*-solid` | #fafafc / #f6f6f8 | #262626 / #393939 | Web (every material has an opaque fallback) | Used automatically under `prefers-reduced-transparency: reduce`, `prefers-contrast: more`, and when `backdrop-filter` is unsupported (verified in Edge) |
 
-Rules carried in the comments: glass only on chrome (HIG, Owner: liked on bars and toolbars, disliked on content tiles and tall panels); never text on an unblurred translucent layer; use both `backdrop-filter` and `-webkit-backdrop-filter`.
+Rules carried in the comments: glass only on chrome (HIG, Owner: liked on bars and toolbars, disliked on content tiles and tall panels); never text on an unblurred translucent layer; use both `backdrop-filter` and `-webkit-backdrop-filter`; text on glass stays `--color-label` with monochrome icons (critique P-B4: accent text on the light bar over a dark hero measured 3.2–4.1:1). Over a dark hero, give the bar the dark theme with `data-theme="dark"` instead of the light glass (critique P-M1).
 
-Worst case before blur (info, from the check): secondary text on the light bar over pure black content is 4.17:1, on the dark bar over pure white content 3.56:1. Blur averages real content toward the middle, but this is why the comment says to keep bars to primary labels and icons. Glass strength is on the board.
+Worst case before blur (info, from the check): secondary text on the light bar over pure black content is 4.17:1, on the dark bar over pure white content 3.56:1 (dark menu 3.82:1). Blur averages real content toward the middle, but this is why the comment says to keep bars to primary labels and icons. Glass strength is on the board.
 
 ### 4.2 Shadows
 
 | Token | Light | Dark | Source | Why |
 |---|---|---|---|---|
 | `--shadow-raised` | 0 1px 2px 5%, 0 2px 8px 6% | 30% / 30% | Web (App Store cards 0 3px 9px 8%) | Rare: a card that must lift off the page |
-| `--shadow-floating` | 0 2px 6px 6%, 0 10px 30px 10% | 30% / 40% | Web (floating player 0 10px 40px 10%, dark 20%) | Floating controls, small popovers |
+| `--shadow-floating` | 0 2px 6px 6%, 0 10px 30px 10% | 1px white ring 6% + 30% / 40% | Web (floating player 0 10px 40px 10%, dark 20%) | Floating controls, small popovers, a window shown on a page. The dark rim was added after critique T-m4 (a floating window lost its edge in dark). IC adds a 30% ring in both themes. |
 | `--shadow-overlay` | 1px ring 5% + 0 12px 40px 18% | 1px white ring 8% + 55% | Web (menus 25% / 55%; 1 px rims on menus) | Menus, sheets: what floats above everything. IC raises the ring to 30%. |
 
 Why: shadows on Apple content are rare and soft; strong shadows are reserved for menus. Dark mode keeps or raises shadow alpha (Web), and the faint light ring marks floating edges that a dark shadow cannot. Exact values INFERRED.
@@ -216,6 +227,7 @@ Why: shadows on Apple content are rare and soft; strong shadows are reserved for
 | `--gap-control` | 12 px | HIG (about 12 pt around bezeled controls) | |
 | `--gap-borderless` | 24 px | HIG (about 24 pt around borderless controls) | |
 | `--pad-row-x` | 16 · **10** | Native (iOS row inset ~16; macOS settings rows and separators 10) | Off-scale 10 kept on purpose: it is the measured macOS value |
+| `--pad-row-y` | 9 · 4 (10 on touch in compact) | INFERRED: `(row-height − control-height-sm) / 2` | Vertical row padding (critique T-M4). A row with `min-height: var(--row-height)` and this padding stays exactly on token whether it holds text or a small control (52 = 34 + 2 × 9; 32 = 24 + 2 × 4). Computed, so it follows the touch override. |
 | `--pad-group` | 16 · 10 | Native | Padding inside a grouped card |
 | `--pad-panel` | 20 · 20 | Native (iPad detail pane 20; macOS content 20) | |
 | `--gap-group` | 32 · 12 | Native (iOS Settings 35; macOS settings boxes 10), rounded to the scale | INFERRED rounding |
@@ -247,6 +259,8 @@ Why: shadows on Apple content are rare and soft; strong shadows are reserved for
 | `--row-height-sidebar` | 44 | 32 | Native (iPad 44; macOS 32) | |
 | `--row-height-menu` | 44 | 28 | Native (macOS menu 24); Web (32) | Compact INFERRED between the two |
 | `--icon-size-sm` / `--icon-size` / `-lg` | 18 / 22 / 28 | 14 / 16 / 20 | digest I3 (17 px text → ~20–22 px icon; 13 px → ~16 px) | INFERRED |
+| `--switch-width` × `--switch-height` | 63 × 28 | 36 × 20 | Native (iOS 26 switch 63 × 28 with a ~37 × 24 pill knob; macOS small switch 36 × 16) | Added after critique P-m7 (the page hard-coded switch ratios). Comfortable follows the current iOS measurement, not the older 51 × 31. Compact height raised from 16 to 20 (INFERRED); extend the hit area to `--hit-min`. |
+| Touch override (compact) | — | rows 24 / 32 / 32 / 28 → 44 | WCAG 2.5.8 + HIG 44 pt (critique T-m5) | Under `(pointer: coarse)` compact dense, list, sidebar and menu rows become 44 px, so a compact project is still touch-safe without each component remembering `max()`. Verified in a mobile context. |
 
 ### 5.4 Radii
 
@@ -301,28 +315,30 @@ Nothing bounces: the owner's brief and the Apple web evidence (no spring oversho
 
 **Method.** A Node script (scratchpad, not in the repo) loads `tokens.css` in Microsoft Edge through `playwright-core`, emulates `prefers-color-scheme`, `prefers-contrast`, `prefers-reduced-motion` and `prefers-reduced-transparency` over CDP, resolves every colour token through `getComputedStyle` (so `var()` and `color-mix()` are evaluated by the browser), alpha-composites translucent colours over their layer, and computes the WCAG 2 ratio. Thresholds: body text 4.5:1, primary label 7:1 (HIG target), large text and UI 3:1, increased-contrast accent and palette text 7:1, tertiary 3:1 (4.5:1 in IC), quaternary none.
 
-**Other checks in the same run, all passing:**
-- The stylesheet parses: 24 rules, 508 of 508 declarations survive CSSOM parsing.
+**Other checks in the same run, all passing (revision 1):**
+- The stylesheet parses: 26 rules, 544 of 544 declarations survive CSSOM parsing.
 - `data-theme="light"` under a dark system resolves to exactly the light tokens (and `color-scheme: light`); `data-theme="dark"` under a light system resolves to exactly the system-dark tokens; the same for both increased-contrast combinations.
-- No attribute = comfortable; type values per density as in §2.2, identical in light and dark; nested compact resolves 13/16; `--tracking-scale: 0` removes tracking.
-- In a mobile touch context, compact `--hit-min` becomes 44 px and an input's text 16 px.
-- Reduced transparency and increased contrast make the bar material opaque with `backdrop-filter: none`; reduced motion sets `--motion-scale: 0` and `--duration-xlong` to 0.2 s.
-- The Tailwind preset references 188 tokens, all declared in `tokens.css`, with no literal values; a Tailwind 3.4 build of sample classes produced the expected `var()` output.
+- Theme islands: a `data-theme="dark"` element inside a light page and a `data-theme="light"` element inside a dark page resolve all 59 colour tokens (derived accent hover, pressed, tint and glass included) exactly like the full theme, with and without increased contrast; the island's `color-scheme` and text colour follow.
+- No attribute = comfortable; type values per density as in §2.2, identical in light and dark; nested compact resolves 13/16; `--tracking-scale: 0` removes tracking; display-1 is 44 px at 390 and 88 px at 1440; lead tracking −0.01em.
+- `--pad-row-y` computes to 9 px (comfortable) and 4 px (compact); switches 63 × 28 and 36 × 20.
+- In a mobile touch context, compact `--hit-min` and all compact row heights become 44 px, `--pad-row-y` 10 px, and an input's text 16 px.
+- Reduced transparency and increased contrast make the glass opaque with `backdrop-filter: none`; reduced motion sets `--motion-scale: 0` and `--duration-xlong` to 0.2 s.
+- The Tailwind preset references 200 tokens, all declared in `tokens.css`, with no literal values; a Tailwind 3.4 build of sample classes produced the expected `var()` output. (The build caught a name collision: `shadow-control-thumb` also matched the `control-thumb` colour and turned into a coloured shadow, so the shadow utility is `shadow-thumb`.)
 
 **Result: every required pair passes in all four modes.** Minimums over all layers:
 
-| Mode | label | secondary | tertiary | quaternary | accent-text | white on accent | focus ring | accent as UI | control border | palette text |
-|---|---|---|---|---|---|---|---|---|---|---|
-| Light | 14.31 | 5.07 | 3.26 | 1.68 | 5.03 | 4.76 | 4.01 | 4.19 | 3.31 | 4.62 |
-| Dark | 10.50 | 6.00 | 3.34 | 1.87 | 4.93 | 4.61 | 4.93 | 3.03 | 3.56 | 4.62 |
-| Light IC | 17.67 | 8.47 | 5.44 | 2.79 | 7.07 | 6.54 | 5.50 | 5.75 | 5.60 | 7.01 |
-| Dark IC | 12.08 | 8.05 | 5.74 | 3.34 | 7.08 | 4.61 | 7.08 | 3.03 | 6.05 | 7.02 |
+| Mode | label | secondary | tertiary | quaternary | accent-text | white on accent | focus ring | accent as UI (page, sidebar) | control border | palette text | thumb vs track |
+|---|---|---|---|---|---|---|---|---|---|---|---|
+| Light | 14.31 | 5.07 | 3.26 | 1.68 | 5.03 | 4.76 | 4.01 | 4.19 | 3.31 | 4.62 | 1.27 (shadow) |
+| Dark | 8.81 | 5.23 | 3.20 | 1.80 | 4.74 | 4.61 | 4.74 | 3.20 | 3.27 | 4.61 | 1.52 |
+| Light IC | 17.67 | 8.47 | 5.44 | 2.79 | 7.07 | 6.54 | 5.50 | 5.75 | 5.60 | 7.01 | 1.48 (shadow) |
+| Dark IC | 10.05 | 6.88 | 5.02 | 3.05 | 7.12 | 4.61 | 7.12 | 3.20 | 5.31 | 7.00 | 1.96 |
 
-Tight spots to know about: the dark accent fill against the dark elevated surface (3.03:1, the window between "white text 4.5:1" and "3:1 against the page" is narrow); light palette text sits at 4.62 on the tertiary layer by design.
+Tight spots to know about: dark tertiary labels on the #424242 layer (3.20); dark accent text on that layer (4.74); dark palette text at 4.61 on it by design; the dark accent fill on cards and elevated surfaces (2.86 / 2.50, info, see §3.5).
 
 ### 6.1 Full matrices
 
-Layers: page = `bg`, secondary, tertiary, grouped, grouped item, elevated, sidebar. A dot means the pair is not meaningful (e.g. accent fill as a switch on a tertiary group).
+Layers: page = `bg`, secondary, tertiary, grouped, grouped item, elevated, sidebar. A dot means the pair is not meaningful. In the accent-fill row only page and sidebar are required; the other values are info (§3.5).
 
 **Light**
 
@@ -334,21 +350,21 @@ Layers: page = `bg`, secondary, tertiary, grouped, grouped item, elevated, sideb
 | label-quaternary (none, decorative) | 1.69 | 1.69 | 1.68 | 1.68 | 1.69 | 1.69 | 1.68 |
 | accent-text (4.5) | 5.97 | 5.49 | 5.03 | 5.35 | 5.97 | 5.97 | 5.25 |
 | focus-ring (3) | 4.76 | 4.37 | 4.01 | 4.27 | 4.76 | 4.76 | 4.19 |
-| accent fill as UI (3) | 4.76 | · | · | · | 4.76 | 4.76 | 4.19 |
+| accent fill as UI (3 on page, sidebar; info elsewhere) | 4.76 | · | 4.01 | · | 4.76 | 4.76 | 4.19 |
 | border-control (3) | 3.35 | 3.31 | · | · | 3.35 | 3.35 | · |
 
 **Dark**
 
 | Foreground (required) | page | secondary | tertiary | grouped | grouped item | elevated | sidebar |
 |---|---|---|---|---|---|---|---|
-| label (7) | 14.09 | 12.37 | 10.50 | 14.09 | 12.37 | 12.05 | 12.68 |
-| label-secondary (4.5) | 7.46 | 6.79 | 6.00 | 7.46 | 6.79 | 6.66 | 6.92 |
-| label-tertiary (3, non-essential) | 3.77 | 3.59 | 3.34 | 3.77 | 3.59 | 3.56 | 3.63 |
-| label-quaternary (none, decorative) | 1.91 | 1.91 | 1.87 | 1.91 | 1.91 | 1.91 | 1.92 |
-| accent-text (4.5) | 6.73 | 5.86 | 4.93 | 6.73 | 5.86 | 5.70 | 6.02 |
-| focus-ring (3) | 6.73 | 5.86 | 4.93 | 6.73 | 5.86 | 5.70 | 6.02 |
-| accent fill as UI (3) | 3.57 | · | · | · | 3.11 | 3.03 | 3.20 |
-| border-control (3) | 3.77 | 3.59 | · | · | 3.59 | 3.56 | · |
+| label (7) | 14.09 | 11.42 | 8.81 | 14.09 | 11.42 | 10.06 | 12.68 |
+| label-secondary (4.5) | 7.46 | 6.40 | 5.23 | 7.46 | 6.40 | 5.80 | 6.92 |
+| label-tertiary (3, non-essential) | 4.01 | 3.67 | 3.20 | 4.01 | 3.67 | 3.44 | 3.85 |
+| label-quaternary (none, decorative) | 1.91 | 1.90 | 1.80 | 1.91 | 1.90 | 1.85 | 1.92 |
+| accent-text (4.5) | 7.78 | 6.23 | 4.74 | 7.78 | 6.23 | 5.45 | 6.96 |
+| focus-ring (3) | 7.78 | 6.23 | 4.74 | 7.78 | 6.23 | 5.45 | 6.96 |
+| accent fill as UI (3 on page, sidebar; info elsewhere) | 3.57 | · | 2.18 | · | 2.86 | 2.50 | 3.20 |
+| border-control (3) | 3.77 | 3.47 | · | · | 3.47 | 3.27 | · |
 
 **Light, increased contrast**
 
@@ -357,24 +373,24 @@ Layers: page = `bg`, secondary, tertiary, grouped, grouped item, elevated, sideb
 | label (7) | 21.00 | 19.29 | 17.67 | 18.82 | 21.00 | 21.00 | 18.46 |
 | label-secondary (4.5) | 9.23 | 8.86 | 8.47 | 8.75 | 9.23 | 9.23 | 8.66 |
 | label-tertiary (4.5) | 5.74 | 5.60 | 5.44 | 5.55 | 5.74 | 5.74 | 5.52 |
-| label-quaternary (none) | 2.85 | 2.82 | 2.79 | 2.81 | 2.85 | 2.85 | 2.80 |
+| label-quaternary (none, decorative) | 2.85 | 2.82 | 2.79 | 2.81 | 2.85 | 2.85 | 2.80 |
 | accent-text (7) | 8.52 | 7.82 | 7.17 | 7.63 | 8.52 | 8.52 | 7.49 |
 | focus-ring (3) | 6.54 | 6.01 | 5.50 | 5.86 | 6.54 | 6.54 | 5.75 |
-| accent fill as UI (3) | 6.54 | · | · | · | 6.54 | 6.54 | 5.75 |
+| accent fill as UI (3 on page, sidebar; info elsewhere) | 6.54 | · | 5.50 | · | 6.54 | 6.54 | 5.75 |
 | border-control (3) | 5.74 | 5.60 | · | · | 5.74 | 5.74 | · |
 
 **Dark, increased contrast**
 
 | Foreground (required) | page | secondary | tertiary | grouped | grouped item | elevated | sidebar |
 |---|---|---|---|---|---|---|---|
-| label (7) | 16.48 | 14.35 | 12.08 | 16.48 | 14.35 | 13.97 | 14.74 |
-| label-secondary (4.5) | 10.44 | 9.32 | 8.05 | 10.44 | 9.32 | 9.11 | 9.53 |
-| label-tertiary (4.5) | 7.09 | 6.47 | 5.74 | 7.09 | 6.47 | 6.35 | 6.59 |
-| label-quaternary (none) | 3.77 | 3.59 | 3.34 | 3.77 | 3.59 | 3.56 | 3.63 |
-| accent-text (7) | 9.66 | 8.41 | 7.08 | 9.66 | 8.41 | 8.18 | 8.64 |
-| focus-ring (3) | 9.66 | 8.41 | 7.08 | 9.66 | 8.41 | 8.18 | 8.64 |
-| accent fill as UI (3) | 3.57 | · | · | · | 3.11 | 3.03 | 3.20 |
-| border-control (3) | 6.72 | 6.16 | · | · | 6.16 | 6.05 | · |
+| label (7) | 16.48 | 13.20 | 10.05 | 16.48 | 13.20 | 11.55 | 14.74 |
+| label-secondary (4.5) | 10.44 | 8.68 | 6.88 | 10.44 | 8.68 | 7.75 | 9.53 |
+| label-tertiary (4.5) | 7.09 | 6.11 | 5.02 | 7.09 | 6.11 | 5.56 | 6.59 |
+| label-quaternary (none, decorative) | 3.77 | 3.47 | 3.05 | 3.77 | 3.47 | 3.27 | 3.63 |
+| accent-text (7) | 11.67 | 9.35 | 7.12 | 11.67 | 9.35 | 8.18 | 10.44 |
+| focus-ring (3) | 11.67 | 9.35 | 7.12 | 11.67 | 9.35 | 8.18 | 10.44 |
+| accent fill as UI (3 on page, sidebar; info elsewhere) | 3.57 | · | 2.18 | · | 2.86 | 2.50 | 3.20 |
+| border-control (3) | 6.72 | 5.83 | · | · | 5.83 | 5.31 | · |
 
 ### 6.2 Other pairs
 
@@ -383,14 +399,18 @@ Layers: page = `bg`, secondary, tertiary, grouped, grouped item, elevated, sideb
 | white on accent | 4.76 | 4.61 | 6.54 | 4.61 | 4.5 |
 | white on accent-hover | 5.85 | 5.69 | 7.82 | 5.69 | 4.5 |
 | white on accent-pressed | 7.00 | 6.82 | 9.08 | 6.82 | 4.5 |
-| accent-text on accent-tint (over page) | 5.07 | 6.05 | 7.07 | 8.68 | 4.5 (IC 7) |
+| accent-text on accent-tint (over page) | 5.07 | 6.99 | 7.07 | 10.49 | 4.5 (IC 7) |
 | label-secondary on fill-hover over page / sidebar | 5.16 / 4.97 | 6.63 / 6.07 | 8.44 / 7.89 | 8.12 / 7.30 | 4.5 |
 | label-secondary on fill-selected over page / sidebar | 5.06 / 4.86 | 6.04 / 5.51 | 7.82 / 7.29 | 6.40 / 5.79 | 4.5 |
-| palette text, worst of 9 colours on worst layer | 4.62 | 4.62 | 7.01 | 7.02 | 4.5 (IC 7) |
-| label-secondary on bar solid / menu solid | 5.26 / 5.21 | 7.05 / 6.66 | 9.05 / 8.89 | 9.74 / 9.11 | 4.5 |
+| palette text, worst of 9 colours on worst layer | 4.62 | 4.61 | 7.01 | 7.00 | 4.5 (IC 7) |
+| control-thumb on control-track over page / card / elevated | 1.27 (all) | 2.06 / 1.69 / 1.52 | 1.48 (all) | 2.58 / 2.16 / 1.96 | dark ≥ 1.4 and thumb lighter; light: shadow draws the thumb |
+| on-media on media-scrim, over a pure white pixel | 3.35 | 3.35 | 3.35 | 3.35 | 3 (large text only) |
+| on-media on media-scrim-strong, over a pure white pixel | 6.20 | 6.20 | 6.20 | 6.20 | 4.5 |
+| on-media-secondary on media-scrim-strong, over a pure white pixel | 5.10 | 5.10 | 5.10 | 5.10 | 4.5 |
+| label-secondary on bar solid / menu solid | 5.26 / 5.21 | 7.05 / 5.80 | 9.05 / 8.89 | 9.74 / 7.75 | 4.5 |
 | label on bar glass over white / black content (before blur) | 16.15 / 8.77 | 5.41 / 14.63 | glass is opaque in IC | glass is opaque in IC | info |
 | label-secondary on bar glass over white / black content | 5.28 / 4.17 | 3.56 / 7.65 | — | — | info |
-| label-secondary on menu glass over white / black content | 5.23 / 4.56 | 4.33 / 7.17 | — | — | info |
+| label-secondary on menu glass over white / black content | 5.23 / 4.56 | 3.82 / 6.48 | — | — | info |
 
 ---
 
@@ -420,9 +440,9 @@ Only what taste decides; each to be shown as a like-for-like pair on the same sc
 
 1. **Comfortable body size:** 17 px (iOS) or a slightly smaller web size such as 16 px, on the same settings screen.
 2. **Accent:** our deeper blue (#0a6ee8, white labels pass AA) against Apple's brighter #0088ff (white labels only 3.5:1, so it would need bold, larger labels), on the same primary button and selected row; optionally a non-blue default.
-3. **Dark base:** dark grey #1f1f1f (current default) against black #000, same app screen in dark mode.
+3. **Dark base:** dark grey #1f1f1f (current default) against black #000, same app screen in dark mode. (With a black base the ladder above it would shift down by the same steps.)
 4. **Glass strength:** bar tint 72% with 20 px blur (current) against a lighter 55% (Apple Music) and a heavier 85%, over the same scrolled content.
-5. **Landing headline scale:** hero headline up to 96 px (current) against ~80 px and ~120 px, with the same image and copy; and tight (−0.015em) against neutral tracking.
+5. **Landing headline scale:** hero headline up to 88 px (current, the top of Apple's measured range) against ~72 px and ~104 px, with the same image and copy; and tight (−0.015em) against neutral tracking.
 6. **Title weight:** bold large and section titles (current, as in Apple's apps) against regular-weight titles (HIG base weight, DocC).
 7. **Card roundness in comfortable density:** 26 px (iOS grouped card, current) against a softer-web 16–20 px, same grouped list.
 8. *(Optional)* **Icon set:** Phosphor against Lucide at 1.5 px in the same toolbar and sidebar.
@@ -432,4 +452,34 @@ Only what taste decides; each to be shown as a like-for-like pair on the same sc
 - **Tracking on Safari:** test on a Mac whether Safari already applies SF's size-specific tracking to `system-ui`. If it does, set `--tracking-scale: 0`. Edge on Windows was the only browser used here.
 - **Hairlines:** the 1 px CSS separator is 2 device px on Retina, heavier than the native 1-device-px line; the 12% alpha compensates. Confirm on a Retina screen in the example page (step 2).
 - **Comfortable menu and popover radii** (20 / 26 px) are not measured; check them on the example page.
-- **Dark accent window:** white on the dark accent passes at 4.61, and the fill against the dark elevated surface at 3.03. A rebrand to a lighter hue will fail one of the two; re-run the check for any new accent.
+- **Dark accent:** white on the dark accent passes at 4.61; against the page and sidebar the fill passes 3:1, on lighter dark surfaces it relies on its indicator (§3.5). A rebrand to a lighter hue needs dark text on the fill; re-run the check for any new accent.
+- **Dark ladder on real screens:** the 1.12–1.15:1 steps are computed; confirm on the example page (critique crops) that window, sidebar and frame now separate on a typical laptop panel.
+
+---
+
+## 10. Revision 1 (after critique-1.md, 2026-11-22)
+
+Only the token findings were applied; page findings belong to the example page.
+
+| Finding | Change | Old → new |
+|---|---|---|
+| T-M1 theme scoping | `data-theme` works on any element; derived colours and the text colour re-resolve on the island (§1) | `:root` only → `:root` + any `[data-theme]` |
+| T-M2 dark steps too close | Even dark ladder (§3.1) | sidebar #282828 → #282828 (kept); secondary #2a2a2a → **#303030**; grouped-item #2a2a2a → **#303030**; elevated #2c2c2c → **#393939**; tertiary #363636 → **#424242**; page and grouped #1f1f1f (kept). Neighbours 1.00–1.03:1 → 1.12–1.15:1 |
+| (follows T-M2) | Retuned for the lighter layers | dark tertiary label 40% → 42%; dark accent-text #5ca9ff → #77b6fe; IC dark accent-text #9ccaff → #bedcff; dark palette text and IC dark palette text lightened (§3.6); dark menu glass tint/solid follow the new elevated (#2c2c2c → #393939) |
+| T-M3 selected thumb | New `--color-control-track`, `--color-control-thumb`, `--shadow-control-thumb` (§3.4) | — → light #ffffff on 20% grey + soft shadow; dark #636363 on 24% grey, no shadow |
+| T-M4 vertical row padding | New `--pad-row-y`, computed (§5.1) | — → 9 px / 4 px (10 px compact on touch) |
+| T-m1 media tokens | New `--color-on-media`, `--color-on-media-secondary`, `--color-media-scrim`, `--color-media-scrim-strong` (§3.7) | — → #fff, white 86%, black 45%, black 62% |
+| T-m2 lead tracking | New `--text-lead-tracking` (and `--text-eyebrow-tracking`) | — → −0.01em (eyebrow 0) |
+| T-m3 display maximum | `--text-display-1-size` (§2.4) | 96 px → 88 px max |
+| T-m4 dark floating rim | `--shadow-floating` dark gets a 1 px white ring at 6%; IC 30% in both themes | no rim → rim |
+| T-m5 touch rows | Compact rows become 44 px under `(pointer: coarse)` (§5.3) | 24–32 px → 44 px on touch |
+| P-m7 switch ratios | New `--switch-width`, `--switch-height` (§5.3) | — → 63 × 28 / 36 × 20 |
+| Glass note | Comment: text on glass stays `--color-label` | — |
+
+**Where we departed from the critique, and why**
+- **Dark ladder values.** The critique suggested #2c2c2e / #333335 / #3a3a3c with sidebar #282828. Those mix cool-tinted greys into a neutral ladder and still leave sidebar against cards at 1.05:1. We used neutral greys in even OKLab steps instead, which separates every neighbour by at least 1.12:1.
+- **Thumb colour.** #636363 instead of #636366, to keep the dark ladder one hue; same lightness.
+- **Row padding.** The critique proposed 11 px comfortable. With a 34 px small control in a 52 px row, 11 px makes a 56 px row, so we derive the padding as (row − small control) / 2 = 9 px, which keeps rows on token with or without a control.
+- **Media scrim.** A single 45% scrim (critique T-m1) leaves body-size and secondary text below 4.5:1 over bright pixels (white 3.35:1, white 86% 2.91:1 over a white pixel), which is the critique's own P-B3 failure. We kept 45% for large type and added a 62% strong scrim for body text.
+- **Accent fill against raised dark surfaces.** Spreading the ladder costs this pair (now 2.86 on cards, 2.50 on elevated). We did not darken the surfaces back, because the critique's main point (separable layers) matters more and WCAG 1.4.11 is met by the indicator on the fill (§3.5). Recorded here so nobody re-tightens one without seeing the other.
+- **Switch size.** The page's 50 × 30 matched older iOS (51 × 31); our token follows the current iOS 26 measurement in native-measurements.md (63 × 28).
