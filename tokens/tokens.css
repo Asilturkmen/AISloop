@@ -1,0 +1,729 @@
+/* ==========================================================================
+   AISloop design tokens
+   Plain CSS custom properties. No framework, no build step.
+
+   How to use
+   - Include this file before your own CSS, then use the tokens:
+       font: var(--text-body); letter-spacing: var(--text-body-tracking);
+       color: var(--color-label); background: var(--color-bg);
+   - Theme: follows the system (prefers-color-scheme). A page that offers its
+     own toggle sets <html data-theme="light"> or <html data-theme="dark">.
+     Increased contrast (prefers-contrast: more) is handled for both themes.
+   - Density: <html data-density="comfortable"> (default, iOS scale, 17px body)
+     or data-density="compact" (macOS / Apple-web scale, 13px body).
+     The attribute also works on any element, e.g. a compact inspector panel.
+   - Landing and product pages (expressive register, D-009) use the
+     --text-display-* scale; app screens use the text styles.
+
+   Where the numbers come from (details and contrast results:
+   research/02-foundations/tokens-rationale.md)
+   - HIG      Apple Human Interface Guidelines (research/hig-digest/)
+   - Native   measured on Apple's shipping apps (native-measurements.md)
+   - Web      measured on Apple's own web apps (apple-web-css.md)
+   - DocC     Apple's open-source Swift-DocC-Render (docc-render.md)
+   - Ours     our choice; the rationale file marks these INFERRED
+   Unit assumption: 1 Apple pt = 1 CSS px. Type sizes are in rem
+   (16px root) so browser text-size settings keep working.
+   ========================================================================== */
+
+
+/* --------------------------------------------------------------------------
+   1. Constants: the same in every theme and density
+   -------------------------------------------------------------------------- */
+:root {
+  color-scheme: light dark;
+
+  /* Font stacks. System font only: Apple devices render it in SF because it
+     is the OS font; other systems get their own UI font. Never embed or name
+     Apple's fonts (licence, HIG). */
+  --font-sans: system-ui, -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto,
+    "Helvetica Neue", "Noto Sans", Arial, sans-serif,
+    "Apple Color Emoji", "Segoe UI Emoji", "Noto Color Emoji";
+  --font-mono: ui-monospace, Menlo, Consolas, "Liberation Mono", monospace;
+  --font-serif: ui-serif, Georgia, "Times New Roman", serif;
+
+  /* Weights. HIG: Regular, Medium, Semibold, Bold only; no light weights. */
+  --weight-regular: 400;
+  --weight-medium: 500;
+  --weight-semibold: 600;
+  --weight-bold: 700;
+
+  /* Tracking switch. Every text style's letter-spacing below is the HIG
+     tracking-table value for its size, multiplied by this number. The table
+     is tuned for SF; set 0 to turn it off (e.g. if a test shows Safari
+     already applies it to system-ui, or for a brand font). */
+  --tracking-scale: 1;
+
+  /* Display scale for landing and product pages (D-009). Fluid between a
+     390px phone and a ~1440px desktop; rem limits keep text zoom working.
+     Tight leading for big type (DocC headlines use 1.08-1.15). Weights and
+     tracking are ours; to be confirmed on the round-2 board. */
+  --text-display-1-size: clamp(2.75rem, 1.5rem + 5.2vw, 6rem);      /* 44 -> 96px: hero headline */
+  --text-display-1-leading: 1.05;
+  --text-display-1-weight: var(--weight-bold);
+  --text-display-1-tracking: -0.015em;
+  --text-display-2-size: clamp(2rem, 1.25rem + 3vw, 4rem);          /* 32 -> 64px: section headline */
+  --text-display-2-leading: 1.08;
+  --text-display-2-weight: var(--weight-bold);
+  --text-display-2-tracking: -0.01em;
+  --text-display-3-size: clamp(1.5rem, 1.1rem + 1.6vw, 2.5rem);     /* 24 -> 40px: sub-section, tile headline */
+  --text-display-3-leading: 1.15;
+  --text-display-3-weight: var(--weight-semibold);
+  --text-display-3-tracking: -0.005em;
+  --text-lead-size: clamp(1.1875rem, 1rem + 0.6vw, 1.5rem);         /* 19 -> 24px: intro paragraph */
+  --text-lead-leading: 1.4;
+  --text-lead-weight: var(--weight-regular);
+  --text-eyebrow-size: clamp(1rem, 0.9rem + 0.4vw, 1.3125rem);      /* 16 -> 21px: kicker above a headline */
+  --text-eyebrow-leading: 1.25;
+  --text-eyebrow-weight: var(--weight-semibold);
+
+  /* Spacing scale (px). Native apps repeat 8, 12, 16, 20; Apple web adds
+     2, 4, 24, 32, 48, 64; DocC lays out in 20, 40, 80. Off-scale values
+     (10, 14, 35...) live only in the density tokens below. */
+  --space-2: 2px;
+  --space-4: 4px;
+  --space-8: 8px;
+  --space-12: 12px;
+  --space-16: 16px;
+  --space-20: 20px;
+  --space-24: 24px;
+  --space-32: 32px;
+  --space-40: 40px;
+  --space-48: 48px;
+  --space-64: 64px;
+  --space-80: 80px;
+  --gap-control: var(--space-12);        /* HIG: about 12pt around bezeled controls */
+  --gap-borderless: var(--space-24);     /* HIG: about 24pt around borderless ones */
+
+  /* Page layout. Gutter follows width, not density (HIG: decide by size
+     class): 16px on a 390px phone, 20px at 500px, 40px from 1000px
+     (Native margins 16/20, Web gutters 25 -> 40). */
+  --gutter: clamp(16px, 4vw, 40px);
+  --width-prose: 68ch;                   /* reading measure; ch follows the element's font */
+  --width-content-narrow: 692px;         /* DocC / apple.com medium column */
+  --width-content: 980px;                /* DocC / apple.com grid */
+  --width-content-wide: 1180px;          /* DocC widest layout */
+  --bar-height: 52px;                    /* top bar: Native macOS toolbar ~51, Web mobile 52, DocC 52 */
+
+  /* Radius scale (px), from Native and Web measurements. */
+  --radius-xs: 4px;                      /* small artwork, tags */
+  --radius-sm: 6px;                      /* macOS push button; also the minimum radius */
+  --radius-md: 8px;                      /* macOS sidebar selection, chips */
+  --radius-lg: 12px;                     /* macOS grouped box, menu */
+  --radius-xl: 16px;                     /* iOS tile, map platter */
+  --radius-2xl: 20px;                    /* macOS popover, iPad list selection */
+  --radius-3xl: 26px;                    /* iOS grouped card, macOS sheet and window */
+  --radius-4xl: 38px;                    /* iOS sheet top corners */
+  --radius-full: 9999px;                 /* capsule and circle */
+  /* Concentric rule (WWDC25, checked in native-measurements.md section 5):
+     a shape nested inside another uses
+       inner = max(outer - padding, var(--radius-min))
+     e.g. border-radius: max(calc(var(--radius-3xl) - var(--space-8)), var(--radius-min));
+     Small controls keep their own minimum; capsules stay capsules. */
+  --radius-min: var(--radius-sm);
+
+  /* Motion. HIG gives no numbers. Web: app interactions 100-210ms, layout
+     ~300ms, marketing reveals 0.5-0.9s, nothing bounces. Easing curves are
+     ours; none overshoots. */
+  --duration-micro: 100ms;               /* press feedback, fade-in of small things */
+  --duration-short: 150ms;               /* hover and colour changes */
+  --duration-medium: 200ms;              /* small transitions: chevrons, badges, popovers */
+  --duration-long: 300ms;                /* layout: sidebar, drawer, panel resize */
+  --duration-xlong: 400ms;               /* sheets and large panels */
+  --duration-expressive: 700ms;          /* landing-page reveals only */
+  --ease-out: cubic-bezier(0.22, 0.61, 0.36, 1);      /* default: things that appear or respond */
+  --ease-in: cubic-bezier(0.55, 0.06, 0.68, 0.19);    /* things that leave */
+  --ease-in-out: cubic-bezier(0.45, 0, 0.55, 1);      /* movement and resizing on screen */
+  --ease-emphasized: cubic-bezier(0.16, 1, 0.3, 1);   /* sheets, hero reveals: long settle, no overshoot */
+  --motion-scale: 1;                     /* multiply distances by this: translateY(calc(12px * var(--motion-scale))) */
+
+  /* Focus ring. Web: Apple draws a 4px ring in the accent at 60% alpha,
+     which is only ~2.3:1 on white. Ours is solid and offset so it passes
+     3:1 next to any surface and stays visible around an accent button.
+     Use with :focus-visible:
+       outline: var(--focus-ring-width) solid var(--color-focus-ring);
+       outline-offset: var(--focus-ring-offset); */
+  --focus-ring-width: 3px;
+  --focus-ring-offset: 2px;
+
+  /* Materials: glass for chrome only (bars, toolbars, floating sidebars,
+     menus, popovers), never for content. Tints are per theme (section 3);
+     use the backdrop value with both backdrop-filter and
+     -webkit-backdrop-filter. Web: Apple bars use saturate(180-220%) with
+     blur(16-20px), menus blur(50-60px). Ours: bar 20px, menu 40px.
+     Put primary labels and icons on glass; secondary text can drop below
+     4.5:1 when very dark or very bright content passes underneath. */
+  --material-bar: var(--material-bar-tint);
+  --material-bar-backdrop: saturate(180%) blur(20px);
+  --material-menu: var(--material-menu-tint);
+  --material-menu-backdrop: saturate(180%) blur(40px);
+}
+
+
+/* --------------------------------------------------------------------------
+   2. Density
+   Default (no attribute) = comfortable. Why: it works at every width and
+   with touch, matches iOS Body and Apple's long-form web text (17px), and
+   survives 200% zoom. Compact is a deliberate choice for dense desktop
+   tools with a fine pointer; Apple's own desktop web apps use it.
+   Text styles: HIG iOS table (comfortable) and macOS table (compact).
+   Size/leading in rem with px in the comment. Weights are what Apple's apps
+   render by default (titles in their bold "emphasized" weight); for an
+   editorial, regular-weight title use --weight-regular (HIG base, DocC).
+   -------------------------------------------------------------------------- */
+:root,
+[data-density="comfortable"] {
+  /* iOS / iPadOS text styles at the default "Large" size (HIG) */
+  --text-large-title-size: 2.125rem;     /* 34 */
+  --text-large-title-leading: 2.5625rem; /* 41 */
+  --text-large-title-weight: var(--weight-bold);
+  --text-large-title-tracking: calc(0.012em * var(--tracking-scale));
+  --text-title-1-size: 1.75rem;          /* 28 */
+  --text-title-1-leading: 2.125rem;      /* 34 */
+  --text-title-1-weight: var(--weight-bold);
+  --text-title-1-tracking: calc(0.014em * var(--tracking-scale));
+  --text-title-2-size: 1.375rem;         /* 22 */
+  --text-title-2-leading: 1.75rem;       /* 28 */
+  --text-title-2-weight: var(--weight-bold);
+  --text-title-2-tracking: calc(-0.012em * var(--tracking-scale));
+  --text-title-3-size: 1.25rem;          /* 20 */
+  --text-title-3-leading: 1.5625rem;     /* 25 */
+  --text-title-3-weight: var(--weight-semibold);
+  --text-title-3-tracking: calc(-0.023em * var(--tracking-scale));
+  --text-headline-size: 1.0625rem;       /* 17 */
+  --text-headline-leading: 1.375rem;     /* 22 */
+  --text-headline-weight: var(--weight-semibold);
+  --text-headline-tracking: calc(-0.026em * var(--tracking-scale));
+  --text-body-size: 1.0625rem;           /* 17 */
+  --text-body-leading: 1.375rem;         /* 22 */
+  --text-body-weight: var(--weight-regular);
+  --text-body-tracking: calc(-0.026em * var(--tracking-scale));
+  --text-callout-size: 1rem;             /* 16 */
+  --text-callout-leading: 1.3125rem;     /* 21 */
+  --text-callout-weight: var(--weight-regular);
+  --text-callout-tracking: calc(-0.02em * var(--tracking-scale));
+  --text-subheadline-size: 0.9375rem;    /* 15 */
+  --text-subheadline-leading: 1.25rem;   /* 20 */
+  --text-subheadline-weight: var(--weight-regular);
+  --text-subheadline-tracking: calc(-0.016em * var(--tracking-scale));
+  --text-footnote-size: 0.8125rem;       /* 13 */
+  --text-footnote-leading: 1.125rem;     /* 18 */
+  --text-footnote-weight: var(--weight-regular);
+  --text-footnote-tracking: calc(-0.006em * var(--tracking-scale));
+  --text-caption-1-size: 0.75rem;        /* 12 */
+  --text-caption-1-leading: 1rem;        /* 16 */
+  --text-caption-1-weight: var(--weight-regular);
+  --text-caption-1-tracking: 0em;
+  --text-caption-2-size: 0.6875rem;      /* 11 */
+  --text-caption-2-leading: 0.8125rem;   /* 13 */
+  --text-caption-2-weight: var(--weight-regular);
+  --text-caption-2-tracking: calc(0.006em * var(--tracking-scale));
+  /* Emphasized weight (HIG "bold" trait) for body-range styles */
+  --text-headline-weight-emphasized: var(--weight-semibold);
+  --text-body-weight-emphasized: var(--weight-semibold);
+  --text-callout-weight-emphasized: var(--weight-semibold);
+  --text-subheadline-weight-emphasized: var(--weight-semibold);
+  --text-footnote-weight-emphasized: var(--weight-semibold);
+  --text-caption-1-weight-emphasized: var(--weight-semibold);
+  --text-caption-2-weight-emphasized: var(--weight-semibold);
+  /* Paragraphs of 3+ lines need looser leading (HIG); DocC sets 17/25 */
+  --text-prose-size: 1.0625rem;          /* 17 */
+  --text-prose-leading: 1.5625rem;       /* 25 */
+  /* Text inside inputs */
+  --text-field-size: 1.0625rem;          /* 17 */
+
+  /* Sizes (Native iOS / iPadOS) */
+  --hit-min: 44px;                       /* HIG minimum hit region */
+  --control-height-sm: 34px;             /* chips, small capsules */
+  --control-height: 44px;                /* buttons, fields, glass circle buttons */
+  --control-height-lg: 48px;             /* bottom search field, prominent buttons */
+  --bar-item-height: 44px;
+  --row-height-dense: 44px;              /* never below the touch minimum */
+  --row-height: 52px;                    /* one-line list row */
+  --row-height-2line: 60px;              /* title + subtitle */
+  --row-height-sidebar: 44px;            /* iPad sidebar */
+  --row-height-menu: 44px;
+  --icon-size-sm: 18px;
+  --icon-size: 22px;
+  --icon-size-lg: 28px;
+
+  /* Spacing inside components */
+  --pad-row-x: var(--space-16);          /* row padding, separator inset */
+  --pad-group: var(--space-16);          /* padding inside a grouped card */
+  --pad-panel: var(--space-20);          /* padding of a pane or sheet */
+  --gap-group: var(--space-32);          /* between grouped cards (Native: 35) */
+  --sidebar-width: 280px;                /* Native iPad 280-320 */
+  --inspector-width: 320px;
+
+  /* Radii by role */
+  --radius-control: var(--radius-full);  /* iOS buttons, fields, chips are capsules */
+  --radius-selection: var(--radius-2xl); /* iPad list selection 20; near-capsule on 44px rows */
+  --radius-group: var(--radius-3xl);     /* inset-grouped card */
+  --radius-menu: var(--radius-2xl);      /* INFERRED, not measured */
+  --radius-popover: var(--radius-3xl);   /* INFERRED, not measured */
+  --radius-sheet: var(--radius-4xl);
+}
+
+[data-density="compact"] {
+  /* macOS text styles (HIG), with a web floor of 11px: macOS sets footnote
+     and captions at 10pt, which is too small for web text. */
+  --text-large-title-size: 1.625rem;     /* 26 */
+  --text-large-title-leading: 2rem;      /* 32 */
+  --text-large-title-weight: var(--weight-bold);
+  --text-large-title-tracking: calc(0.008em * var(--tracking-scale));
+  --text-title-1-size: 1.375rem;         /* 22 */
+  --text-title-1-leading: 1.625rem;      /* 26 */
+  --text-title-1-weight: var(--weight-bold);
+  --text-title-1-tracking: calc(-0.012em * var(--tracking-scale));
+  --text-title-2-size: 1.0625rem;        /* 17 */
+  --text-title-2-leading: 1.375rem;      /* 22 */
+  --text-title-2-weight: var(--weight-bold);
+  --text-title-2-tracking: calc(-0.026em * var(--tracking-scale));
+  --text-title-3-size: 0.9375rem;        /* 15 */
+  --text-title-3-leading: 1.25rem;       /* 20 */
+  --text-title-3-weight: var(--weight-semibold);
+  --text-title-3-tracking: calc(-0.016em * var(--tracking-scale));
+  --text-headline-size: 0.8125rem;       /* 13 */
+  --text-headline-leading: 1rem;         /* 16 */
+  --text-headline-weight: var(--weight-bold);
+  --text-headline-tracking: calc(-0.006em * var(--tracking-scale));
+  --text-body-size: 0.8125rem;           /* 13 */
+  --text-body-leading: 1rem;             /* 16 */
+  --text-body-weight: var(--weight-regular);
+  --text-body-tracking: calc(-0.006em * var(--tracking-scale));
+  --text-callout-size: 0.75rem;          /* 12 */
+  --text-callout-leading: 0.9375rem;     /* 15 */
+  --text-callout-weight: var(--weight-regular);
+  --text-callout-tracking: 0em;
+  --text-subheadline-size: 0.6875rem;    /* 11 */
+  --text-subheadline-leading: 0.875rem;  /* 14 */
+  --text-subheadline-weight: var(--weight-regular);
+  --text-subheadline-tracking: calc(0.006em * var(--tracking-scale));
+  --text-footnote-size: 0.6875rem;       /* 11 (macOS 10) */
+  --text-footnote-leading: 0.875rem;     /* 14 */
+  --text-footnote-weight: var(--weight-regular);
+  --text-footnote-tracking: calc(0.006em * var(--tracking-scale));
+  --text-caption-1-size: 0.6875rem;      /* 11 (macOS 10) */
+  --text-caption-1-leading: 0.875rem;    /* 14 */
+  --text-caption-1-weight: var(--weight-regular);
+  --text-caption-1-tracking: calc(0.006em * var(--tracking-scale));
+  --text-caption-2-size: 0.6875rem;      /* 11 (macOS 10) */
+  --text-caption-2-leading: 0.875rem;    /* 14 */
+  --text-caption-2-weight: var(--weight-medium);
+  --text-caption-2-tracking: calc(0.006em * var(--tracking-scale));
+  --text-headline-weight-emphasized: var(--weight-bold);   /* macOS: Heavy, capped at 700 */
+  --text-body-weight-emphasized: var(--weight-semibold);
+  --text-callout-weight-emphasized: var(--weight-semibold);
+  --text-subheadline-weight-emphasized: var(--weight-semibold);
+  --text-footnote-weight-emphasized: var(--weight-semibold);
+  --text-caption-1-weight-emphasized: var(--weight-medium);
+  --text-caption-2-weight-emphasized: var(--weight-semibold);
+  --text-prose-size: 0.8125rem;          /* 13 */
+  --text-prose-leading: 1.125rem;        /* 18: Web description text */
+  --text-field-size: 0.8125rem;          /* 13; raised to 16px on touch, see below */
+
+  /* Sizes (Native macOS; Web desktop) */
+  --hit-min: 24px;                       /* WCAG 2.5.8 floor; macOS allows 20 */
+  --control-height-sm: 24px;             /* macOS regular push button */
+  --control-height: 28px;                /* desktop default (HIG macOS control 28) */
+  --control-height-lg: 36px;             /* macOS toolbar item, Web desktop pill */
+  --bar-item-height: 36px;
+  --row-height-dense: 24px;              /* table rows (Finder 20, raised to the 24px floor) */
+  --row-height: 32px;                    /* list and sidebar row */
+  --row-height-2line: 44px;              /* title + subtitle (Web: 46) */
+  --row-height-sidebar: 32px;
+  --row-height-menu: 28px;               /* macOS 24, Web 32 */
+  --icon-size-sm: 14px;
+  --icon-size: 16px;
+  --icon-size-lg: 20px;
+
+  --pad-row-x: 10px;                     /* macOS settings rows and separators: 10 */
+  --pad-group: 10px;
+  --pad-panel: var(--space-20);          /* macOS content padding: 20 */
+  --gap-group: var(--space-12);          /* macOS settings boxes: 10 */
+  --sidebar-width: 220px;                /* Native macOS 162-287, System Settings 214 */
+  --inspector-width: 260px;              /* Native iWork 235-275 */
+
+  --radius-control: var(--radius-md);    /* rounded rect, ~0.28 x height like macOS push buttons */
+  --radius-selection: var(--radius-md);  /* macOS sidebar selection: 8 */
+  --radius-group: var(--radius-lg);      /* System Settings box: 12 */
+  --radius-menu: var(--radius-lg);       /* macOS menu: 12 */
+  --radius-popover: var(--radius-2xl);   /* macOS popover: 20 */
+  --radius-sheet: var(--radius-3xl);     /* macOS sheet: 25 */
+}
+
+/* Touch input: hit regions grow to 44px in every density, and input text
+   stays at 16px or more so iOS Safari does not zoom into the field. */
+@media (pointer: coarse) {
+  :root,
+  [data-density] {
+    --hit-min: 44px;
+  }
+  [data-density="compact"] {
+    --text-field-size: 1rem;
+  }
+}
+
+/* Font shorthands, rebuilt wherever density changes:
+   font: var(--text-body); letter-spacing: var(--text-body-tracking); */
+:root,
+[data-density] {
+  --text-large-title: var(--text-large-title-weight) var(--text-large-title-size) / var(--text-large-title-leading) var(--font-sans);
+  --text-title-1: var(--text-title-1-weight) var(--text-title-1-size) / var(--text-title-1-leading) var(--font-sans);
+  --text-title-2: var(--text-title-2-weight) var(--text-title-2-size) / var(--text-title-2-leading) var(--font-sans);
+  --text-title-3: var(--text-title-3-weight) var(--text-title-3-size) / var(--text-title-3-leading) var(--font-sans);
+  --text-headline: var(--text-headline-weight) var(--text-headline-size) / var(--text-headline-leading) var(--font-sans);
+  --text-body: var(--text-body-weight) var(--text-body-size) / var(--text-body-leading) var(--font-sans);
+  --text-callout: var(--text-callout-weight) var(--text-callout-size) / var(--text-callout-leading) var(--font-sans);
+  --text-subheadline: var(--text-subheadline-weight) var(--text-subheadline-size) / var(--text-subheadline-leading) var(--font-sans);
+  --text-footnote: var(--text-footnote-weight) var(--text-footnote-size) / var(--text-footnote-leading) var(--font-sans);
+  --text-caption-1: var(--text-caption-1-weight) var(--text-caption-1-size) / var(--text-caption-1-leading) var(--font-sans);
+  --text-caption-2: var(--text-caption-2-weight) var(--text-caption-2-size) / var(--text-caption-2-leading) var(--font-sans);
+  --text-prose: var(--weight-regular) var(--text-prose-size) / var(--text-prose-leading) var(--font-sans);
+  --text-display-1: var(--text-display-1-weight) var(--text-display-1-size) / var(--text-display-1-leading) var(--font-sans);
+  --text-display-2: var(--text-display-2-weight) var(--text-display-2-size) / var(--text-display-2-leading) var(--font-sans);
+  --text-display-3: var(--text-display-3-weight) var(--text-display-3-size) / var(--text-display-3-leading) var(--font-sans);
+  --text-lead: var(--text-lead-weight) var(--text-lead-size) / var(--text-lead-leading) var(--font-sans);
+  --text-eyebrow: var(--text-eyebrow-weight) var(--text-eyebrow-size) / var(--text-eyebrow-leading) var(--font-sans);
+}
+
+
+/* --------------------------------------------------------------------------
+   3. Colour: light theme (default)
+   Semantic names only; never use a palette colour where a role exists.
+   Contrast of every pair: tokens-rationale.md.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Background layers. Native: grouped page #f2f2f7 with white cards;
+     Web: grey page #f5f5f7; macOS sidebar ~#ededed. Light greys keep
+     Apple's slight cool tint. */
+  --color-bg: #ffffff;                   /* page, window content */
+  --color-bg-secondary: #f5f5f7;         /* a box or inset group on the page */
+  --color-bg-tertiary: #ebebf0;          /* a group inside a group */
+  --color-bg-grouped: #f2f2f7;           /* page behind inset-grouped lists (Settings) */
+  --color-bg-grouped-item: #ffffff;      /* the cards on it */
+  --color-bg-elevated: #ffffff;          /* sheets, popovers, menus, dialogs */
+  --color-bg-sidebar: #f0f0f3;           /* opaque sidebar */
+
+  /* Labels: black at falling alpha, so they sit on any layer (Web model).
+     Secondary passes 4.5:1 on every layer (Apple's 50-60% does not).
+     Tertiary (>= 3:1) is for disabled, unavailable or decorative text only;
+     quaternary is watermark-level (HIG) and never carries information. */
+  --color-label: rgb(0 0 0 / 0.88);
+  --color-label-secondary: rgb(0 0 0 / 0.58);
+  --color-label-tertiary: rgb(0 0 0 / 0.45);
+  --color-label-quaternary: rgb(0 0 0 / 0.22);
+
+  /* Separators: 1px lines, very light (Native ~#e5e5e7; Web 11-15% black).
+     Translucent works on tinted surfaces; opaque is crisper on flat ones.
+     A control whose border is its only outline needs 3:1: border-control. */
+  --color-separator: rgb(0 0 0 / 0.12);
+  --color-separator-opaque: #dfdfe2;
+  --color-border-control: rgb(0 0 0 / 0.45);
+
+  /* Fills for controls: tracks, grey buttons, segmented controls, value
+     capsules (Web: 8/12/16% of a cool grey). Hover and selection are
+     neutral overlays (Web: hover 4-6%, selection 4-10%). */
+  --color-fill: rgb(120 120 128 / 0.2);
+  --color-fill-secondary: rgb(120 120 128 / 0.16);
+  --color-fill-tertiary: rgb(120 120 128 / 0.12);
+  --color-fill-quaternary: rgb(120 120 128 / 0.08);
+  --color-fill-hover: rgb(0 0 0 / 0.05);
+  --color-fill-selected: rgb(0 0 0 / 0.08);
+
+  /* Accent: one per view, on the background of the main action.
+     Apple's #007aff / #0088ff give white text only 4.0 / 3.5:1, so our fill
+     is a little deeper (white on it 4.8:1). Links and accent-coloured text
+     use --color-accent-text (>= 5:1 on every layer). To rebrand, override
+     --color-accent and --color-accent-text in all four colour blocks
+     (light, dark, both increased-contrast) and re-run the contrast check;
+     hover, pressed, tint and focus ring follow. */
+  --color-accent: #0a6ee8;
+  --color-accent-hover: color-mix(in srgb, var(--color-accent) 88%, black);
+  --color-accent-pressed: color-mix(in srgb, var(--color-accent) 78%, black);
+  --color-accent-tint: color-mix(in srgb, var(--color-accent) 12%, transparent); /* tinted button background */
+  --color-on-accent: #ffffff;
+  --color-accent-text: #055fcc;
+  --color-focus-ring: var(--color-accent);
+
+  /* Meaningful colours, for small elements that carry meaning (tags,
+     calendar events, status dots, charts), never as a page wash.
+     Fill = HIG 2025 system colour (light). Text = ours, darkened in OKLCH
+     until it reaches 4.5:1 on every light layer. Never put text in the
+     fill colour; use the -text token. */
+  --color-red: #ff383c;      --color-red-text: #d30725;
+  --color-orange: #ff8d28;   --color-orange-text: #b04a03;
+  --color-yellow: #ffcc00;   --color-yellow-text: #905f05;
+  --color-green: #34c759;    --color-green-text: #057a2d;
+  --color-teal: #00c3d0;     --color-teal-text: #057388;
+  --color-blue: #0088ff;     --color-blue-text: #0c60e5;
+  --color-indigo: #6155f5;   --color-indigo-text: #564ade;
+  --color-purple: #cb30e0;   --color-purple-text: #ac2abe;
+  --color-pink: #ff2d55;     --color-pink-text: #d10443;
+
+  /* Overlays */
+  --color-scrim: rgb(0 0 0 / 0.4);       /* behind modal sheets (DocC 0.4, Web 0.45) */
+  --color-media-dim: rgb(0 0 0 / 0.35);  /* HIG: dim bright media behind clear glass controls */
+
+  /* Material tints (glass) and their opaque fallbacks */
+  --material-bar-tint: rgb(250 250 252 / 0.72);
+  --material-bar-solid: #fafafc;
+  --material-menu-tint: rgb(246 246 248 / 0.82);
+  --material-menu-solid: #f6f6f8;
+
+  /* Shadows: rare and soft on content; stronger only for what floats above
+     everything (Web: cards 0 3px 9px at 8%, menus 0 8px 40px at 25%). */
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.05), 0 2px 8px rgb(0 0 0 / 0.06);
+  --shadow-floating: 0 2px 6px rgb(0 0 0 / 0.06), 0 10px 30px rgb(0 0 0 / 0.1);
+  --shadow-overlay: 0 0 0 1px rgb(0 0 0 / 0.05), 0 12px 40px rgb(0 0 0 / 0.18);
+}
+
+/* A page-level toggle forcing light must also force light form controls
+   and scrollbars under a dark system setting. */
+:root[data-theme="light"] {
+  color-scheme: light;
+}
+
+
+/* --------------------------------------------------------------------------
+   4. Colour: dark theme
+   Base is dark grey (Web: Music and Podcasts #1f1f1f), not black; layers
+   above it get lighter (HIG: elevated surfaces are brighter in dark mode).
+   The block appears twice: once for the system setting, once for an
+   explicit data-theme="dark". Keep the two identical.
+   -------------------------------------------------------------------------- */
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    color-scheme: dark;
+    --color-bg: #1f1f1f;
+    --color-bg-secondary: #2a2a2a;
+    --color-bg-tertiary: #363636;
+    --color-bg-grouped: #1f1f1f;
+    --color-bg-grouped-item: #2a2a2a;
+    --color-bg-elevated: #2c2c2c;        /* inside it, nest groups with bg-tertiary */
+    --color-bg-sidebar: #282828;
+
+    --color-label: rgb(255 255 255 / 0.92);
+    --color-label-secondary: rgb(255 255 255 / 0.64);
+    --color-label-tertiary: rgb(255 255 255 / 0.4);
+    --color-label-quaternary: rgb(255 255 255 / 0.2);
+
+    --color-separator: rgb(255 255 255 / 0.12);
+    --color-separator-opaque: #3a3a3a;
+    --color-border-control: rgb(255 255 255 / 0.4);
+
+    --color-fill: rgb(120 120 128 / 0.36);
+    --color-fill-secondary: rgb(120 120 128 / 0.3);
+    --color-fill-tertiary: rgb(120 120 128 / 0.24);
+    --color-fill-quaternary: rgb(120 120 128 / 0.18);
+    --color-fill-hover: rgb(255 255 255 / 0.06);
+    --color-fill-selected: rgb(255 255 255 / 0.1);
+
+    --color-accent: #0070ee;             /* white on it 4.6:1; as light as that allows */
+    --color-accent-text: #5ca9ff;
+    --color-focus-ring: var(--color-accent-text);
+
+    /* Fill = HIG 2025 dark value. Text = the fill where it already passes
+       4.5:1 on every dark layer, otherwise lightened by us. */
+    --color-red: #ff4245;      --color-red-text: #fd7770;
+    --color-orange: #ff9230;   --color-orange-text: var(--color-orange);
+    --color-yellow: #ffd600;   --color-yellow-text: var(--color-yellow);
+    --color-green: #30d158;    --color-green-text: var(--color-green);
+    --color-teal: #00d2e0;     --color-teal-text: var(--color-teal);
+    --color-blue: #0091ff;     --color-blue-text: #4da4fd;
+    --color-indigo: #6d7cff;   --color-indigo-text: #8899fd;
+    --color-purple: #db34f2;   --color-purple-text: #eb6bfd;
+    --color-pink: #ff375f;     --color-pink-text: #ff7381;
+
+    --color-scrim: rgb(0 0 0 / 0.5);
+
+    --material-bar-tint: rgb(38 38 38 / 0.72);
+    --material-bar-solid: #262626;
+    --material-menu-tint: rgb(44 44 44 / 0.82);
+    --material-menu-solid: #2c2c2c;
+
+    /* Dark keeps or raises shadow alpha (Web); a faint light rim marks the
+       edge of floating surfaces. */
+    --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.3);
+    --shadow-floating: 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
+    --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 40px rgb(0 0 0 / 0.55);
+  }
+}
+
+:root[data-theme="dark"] {
+  color-scheme: dark;
+  --color-bg: #1f1f1f;
+  --color-bg-secondary: #2a2a2a;
+  --color-bg-tertiary: #363636;
+  --color-bg-grouped: #1f1f1f;
+  --color-bg-grouped-item: #2a2a2a;
+  --color-bg-elevated: #2c2c2c;
+  --color-bg-sidebar: #282828;
+
+  --color-label: rgb(255 255 255 / 0.92);
+  --color-label-secondary: rgb(255 255 255 / 0.64);
+  --color-label-tertiary: rgb(255 255 255 / 0.4);
+  --color-label-quaternary: rgb(255 255 255 / 0.2);
+
+  --color-separator: rgb(255 255 255 / 0.12);
+  --color-separator-opaque: #3a3a3a;
+  --color-border-control: rgb(255 255 255 / 0.4);
+
+  --color-fill: rgb(120 120 128 / 0.36);
+  --color-fill-secondary: rgb(120 120 128 / 0.3);
+  --color-fill-tertiary: rgb(120 120 128 / 0.24);
+  --color-fill-quaternary: rgb(120 120 128 / 0.18);
+  --color-fill-hover: rgb(255 255 255 / 0.06);
+  --color-fill-selected: rgb(255 255 255 / 0.1);
+
+  --color-accent: #0070ee;
+  --color-accent-text: #5ca9ff;
+  --color-focus-ring: var(--color-accent-text);
+
+  --color-red: #ff4245;      --color-red-text: #fd7770;
+  --color-orange: #ff9230;   --color-orange-text: var(--color-orange);
+  --color-yellow: #ffd600;   --color-yellow-text: var(--color-yellow);
+  --color-green: #30d158;    --color-green-text: var(--color-green);
+  --color-teal: #00d2e0;     --color-teal-text: var(--color-teal);
+  --color-blue: #0091ff;     --color-blue-text: #4da4fd;
+  --color-indigo: #6d7cff;   --color-indigo-text: #8899fd;
+  --color-purple: #db34f2;   --color-purple-text: #eb6bfd;
+  --color-pink: #ff375f;     --color-pink-text: #ff7381;
+
+  --color-scrim: rgb(0 0 0 / 0.5);
+
+  --material-bar-tint: rgb(38 38 38 / 0.72);
+  --material-bar-solid: #262626;
+  --material-menu-tint: rgb(44 44 44 / 0.82);
+  --material-menu-solid: #2c2c2c;
+
+  --shadow-raised: 0 1px 2px rgb(0 0 0 / 0.3), 0 2px 8px rgb(0 0 0 / 0.3);
+  --shadow-floating: 0 2px 6px rgb(0 0 0 / 0.3), 0 10px 30px rgb(0 0 0 / 0.4);
+  --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.08), 0 12px 40px rgb(0 0 0 / 0.55);
+}
+
+
+/* --------------------------------------------------------------------------
+   5. Increased contrast (prefers-contrast: more), both themes
+   HIG: every colour has an increased-contrast variant. Labels and lines get
+   stronger, tertiary text reaches 4.5:1, accent and palette text reach
+   7:1, palette fills switch to the HIG increased-contrast column, glass
+   turns opaque (section 6).
+   -------------------------------------------------------------------------- */
+@media (prefers-contrast: more) {
+  :root {
+    --color-label: rgb(0 0 0 / 1);
+    --color-label-secondary: rgb(0 0 0 / 0.72);
+    --color-label-tertiary: rgb(0 0 0 / 0.6);
+    --color-label-quaternary: rgb(0 0 0 / 0.4);
+    --color-separator: rgb(0 0 0 / 0.26);
+    --color-separator-opaque: #c2c2c6;
+    --color-border-control: rgb(0 0 0 / 0.6);
+    --color-fill-hover: rgb(0 0 0 / 0.08);
+    --color-fill-selected: rgb(0 0 0 / 0.14);
+    --color-accent: #0259c2;             /* white on it 6.5:1 */
+    --color-accent-text: #0449a0;
+    --color-red: #e9152d;      --color-red-text: #9f061a;
+    --color-orange: #c55300;   --color-orange-text: #843603;
+    --color-yellow: #a16a00;   --color-yellow-text: #6c4603;
+    --color-green: #008932;    --color-green-text: #035b20;
+    --color-teal: #008198;     --color-teal-text: #035565;
+    --color-blue: #1e6ef4;     --color-blue-text: #0246b0;
+    --color-indigo: #564ade;   --color-indigo-text: #4631c6;
+    --color-purple: #b02fc2;   --color-purple-text: #870797;
+    --color-pink: #e7124d;     --color-pink-text: #9e0431;
+    --shadow-overlay: 0 0 0 1px rgb(0 0 0 / 0.3), 0 12px 40px rgb(0 0 0 / 0.18);
+  }
+}
+
+@media (prefers-contrast: more) and (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --color-label: rgb(255 255 255 / 1);
+    --color-label-secondary: rgb(255 255 255 / 0.78);
+    --color-label-tertiary: rgb(255 255 255 / 0.62);
+    --color-label-quaternary: rgb(255 255 255 / 0.4);
+    --color-separator: rgb(255 255 255 / 0.3);
+    --color-separator-opaque: #626262;
+    --color-border-control: rgb(255 255 255 / 0.6);
+    --color-fill-hover: rgb(255 255 255 / 0.1);
+    --color-fill-selected: rgb(255 255 255 / 0.18);
+    --color-accent: #0070ee;             /* unchanged: darker would lose 3:1 against the page */
+    --color-accent-text: #9ccaff;
+    --color-red: #ff6165;      --color-red-text: #feb2ae;
+    --color-orange: #ffa056;   --color-orange-text: #ffb681;
+    --color-yellow: #fedf43;   --color-yellow-text: var(--color-yellow);
+    --color-green: #4ad968;    --color-green-text: #52e06e;
+    --color-teal: #3bddec;     --color-teal-text: var(--color-teal);
+    --color-blue: #5cb8ff;     --color-blue-text: #8eccff;
+    --color-indigo: #a7aaff;   --color-indigo-text: #bdc1fe;
+    --color-purple: #ea8dff;   --color-purple-text: #f0aeff;
+    --color-pink: #ff8ac4;     --color-pink-text: #feaed3;
+    --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.3), 0 12px 40px rgb(0 0 0 / 0.55);
+  }
+}
+
+@media (prefers-contrast: more) {
+  :root[data-theme="dark"] {
+    --color-label: rgb(255 255 255 / 1);
+    --color-label-secondary: rgb(255 255 255 / 0.78);
+    --color-label-tertiary: rgb(255 255 255 / 0.62);
+    --color-label-quaternary: rgb(255 255 255 / 0.4);
+    --color-separator: rgb(255 255 255 / 0.3);
+    --color-separator-opaque: #626262;
+    --color-border-control: rgb(255 255 255 / 0.6);
+    --color-fill-hover: rgb(255 255 255 / 0.1);
+    --color-fill-selected: rgb(255 255 255 / 0.18);
+    --color-accent: #0070ee;
+    --color-accent-text: #9ccaff;
+    --color-red: #ff6165;      --color-red-text: #feb2ae;
+    --color-orange: #ffa056;   --color-orange-text: #ffb681;
+    --color-yellow: #fedf43;   --color-yellow-text: var(--color-yellow);
+    --color-green: #4ad968;    --color-green-text: #52e06e;
+    --color-teal: #3bddec;     --color-teal-text: var(--color-teal);
+    --color-blue: #5cb8ff;     --color-blue-text: #8eccff;
+    --color-indigo: #a7aaff;   --color-indigo-text: #bdc1fe;
+    --color-purple: #ea8dff;   --color-purple-text: #f0aeff;
+    --color-pink: #ff8ac4;     --color-pink-text: #feaed3;
+    --shadow-overlay: 0 0 0 1px rgb(255 255 255 / 0.3), 0 12px 40px rgb(0 0 0 / 0.55);
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   6. Glass fallbacks
+   Opaque chrome when the user asks for less transparency or more contrast
+   (HIG: glass adapts to both), or when the browser cannot blur. Text must
+   never sit on an unblurred translucent layer.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-transparency: reduce), (prefers-contrast: more) {
+  :root {
+    --material-bar: var(--material-bar-solid);
+    --material-bar-backdrop: none;
+    --material-menu: var(--material-menu-solid);
+    --material-menu-backdrop: none;
+  }
+}
+
+@supports not ((backdrop-filter: blur(1px)) or (-webkit-backdrop-filter: blur(1px))) {
+  :root {
+    --material-bar: var(--material-bar-solid);
+    --material-bar-backdrop: none;
+    --material-menu: var(--material-menu-solid);
+    --material-menu-backdrop: none;
+  }
+}
+
+
+/* --------------------------------------------------------------------------
+   7. Reduced motion
+   HIG: replace movement with fades, no bounce, no zoom, no animated blur.
+   Distances drop to zero; long transitions shorten; fades keep working.
+   -------------------------------------------------------------------------- */
+@media (prefers-reduced-motion: reduce) {
+  :root {
+    --motion-scale: 0;
+    --duration-long: var(--duration-medium);
+    --duration-xlong: var(--duration-medium);
+    --duration-expressive: var(--duration-medium);
+  }
+}
