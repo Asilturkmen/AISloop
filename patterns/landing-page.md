@@ -79,7 +79,9 @@ One reveal of the hero on load (`--duration-expressive`, `--ease-emphasized`); s
 ## Narrow screens
 
 - The hero stacks: text first, then the image. A full-bleed image becomes a block under the text, cropped to keep its subject in frame (check the crop at 320 and 390px).
-- Actions may stack; the primary stays first.
+- **No screenful of text alone.** At 390×664 the first screen shows the headline, the primary action and a clear part of the visual; further down, no screen-height stretch is text only. When it is, cut words before shrinking the visual.
+- When the visual is the real interface, show one enlarged, legible crop of it on phones (a single card or control people recognise), not a whole screen scaled down: a shrunken screen reads as more text.
+- Keep the primary button its natural size, not stretched to full width. Actions may stack; the primary stays first.
 - Sections become one column: text, then the visual.
 - Display sizes shrink by themselves (the `clamp()` scale); the headline still fits in three lines.
 

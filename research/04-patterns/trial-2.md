@@ -46,4 +46,19 @@ Not changed: the image order in `AGENTS.md` and `preferences.md` already agree (
 
 Round 4 on the same review board: six images. The Kestrel list–detail example (desktop, light), and the agent's main screen (desktop light), a record on the phone (dark), settings (desktop light) and the landing page (desktop light full page, phone dark). Like / dislike / unsure, no extra question. Votes: ids `r4i01`–`r4i06`.
 
-**Result:** waiting for the owner's votes.
+**Result (2026-11-22): 4 liked, 1 unsure, 1 disliked.**
+
+| Id | Screen | Vote |
+|---|---|---|
+| r4i01 | Kestrel list–detail example, desktop light | unsure, no note |
+| r4i02 | Ev Defteri main screen, desktop light | liked |
+| r4i03 | Ev Defteri record, phone dark | liked |
+| r4i04 | Ev Defteri settings, desktop light | liked |
+| r4i05 | Ev Defteri landing page, desktop light, full page | liked |
+| r4i06 | Ev Defteri landing page, phone dark | disliked: "it looks very monotonous; who reads all that text on a landing page" |
+
+What changed after the board:
+- The phone landing page followed the rules and still read as a wall of text: a three-line headline, a lead, a full-width button, then a hero made of the real interface, itself a card of text, all on dark. `patterns/landing-page.md` (narrow screens) now asks that no screenful be text alone, that a real-interface visual be shown on phones as one enlarged crop rather than a shrunken screen, and that the primary button keep its natural size. `preferences.md` records the vote. The Kestrel example already meets this (its photo starts in the first screen at 390×664).
+- r4i01 (unsure, no note) changes nothing: the example follows the pattern, and the same layout made by the agent (r4i02) was liked. Per D-012 it does not go back to the owner as a question.
+
+Batch 1 counts as done: the agent's main screen, settings and desktop landing page were accepted, and the one rejected screen led to a rule.

@@ -6,7 +6,7 @@
 
 [English](README.md)
 
-> **Durum: kullanılabilir.** Bu repoyu bir ajana verdiğinde [`AGENTS.md`](AGENTS.md) dosyasından başlar. Temeller, token'lar, canlı örnekler ve kontrol listesi yerinde; ilk üç kalıp (ayarlar, liste–detay, tanıtım sayfası) yazıldı ve bir ajanla deneniyor. Bkz. [Yol haritası](#yol-haritası).
+> **Durum: kullanılabilir.** Bu repoyu bir ajana verdiğinde [`AGENTS.md`](AGENTS.md) dosyasından başlar. Temeller, token'lar, canlı örnekler, kontrol listesi ve ilk üç kalıp (ayarlar, liste–detay, tanıtım sayfası) yerinde; diğer kalıplar tek tek geliyor. Bkz. [Yol haritası](#yol-haritası).
 >
 > Kuralların asıl hâli İngilizcedir, çünkü onları okuyacak olan ajanlardır. Bu sayfa Türkçe tanıtımdır.
 
@@ -97,7 +97,7 @@ Diğer kalıplar (formlar ve oturum açma, gezinme, diyaloglar…) yol haritası
 | 1 | Zevk kalibrasyonu: araştırma, pano, 51 oy | bitti |
 | 2 | Temeller: yazı, renk, boşluk, köşeler, malzeme, hareket → token'lar + canlı örnek sayfa | bitti |
 | 3 | `AGENTS.md` giriş kapısı ve son yapı, yeni bir ajanla denendi | bitti |
-| 4 | Kalıplar tek tek (ayarlar, liste–detay, formlar, tanıtım sayfası…), her biri gerçek bir projede denenerek | sürüyor: ilk üçü yazıldı, deneme bekliyor |
+| 4 | Kalıplar tek tek (ayarlar, liste–detay, formlar, tanıtım sayfası…), her biri gerçek bir projede denenerek | sürüyor: ilk üçü bitti |
 
 ## Uyarı
 

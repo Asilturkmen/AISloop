@@ -6,7 +6,7 @@
 
 [Türkçe](README.tr.md)
 
-> **Status: usable.** Hand an agent this repo and it starts at [`AGENTS.md`](AGENTS.md). Foundations, tokens, live examples and a checklist are in place; the first three patterns (settings, list–detail, landing page) are written and being tried with an agent. See [Roadmap](#roadmap).
+> **Status: usable.** Hand an agent this repo and it starts at [`AGENTS.md`](AGENTS.md). Foundations, tokens, live examples, a checklist and the first three patterns (settings, list–detail, landing page) are in place; more patterns come one at a time. See [Roadmap](#roadmap).
 
 ---
 
@@ -95,7 +95,7 @@ More patterns (forms and sign-in, navigation, dialogs…) arrive as the roadmap 
 | 1 | Taste calibration: research, review board, 51 votes | done |
 | 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | done |
 | 3 | `AGENTS.md` entry point and the final structure, tested with a fresh agent | done |
-| 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | in progress: first three written, trial pending |
+| 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | in progress: first three done |
 
 ## Disclaimer
 

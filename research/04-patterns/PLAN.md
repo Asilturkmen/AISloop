@@ -1,6 +1,6 @@
 # Phase 4 plan: patterns
 
-Status: **batch 1, step 5 (board)** (2026-11-22). Done: the three pattern files, `patterns/README.md`, the live example `examples/patterns/list-detail.html`, `patterns/` in `AGENTS.md` and both READMEs (status: "written, trial pending"), D-014, the critique (28 findings fixed) and trial 2 ([trial-2.md](trial-2.md); its gaps fixed). Waiting for round-4 votes (`r4i01`–`r4i06`); then record the result in trial-2.md, update the README status lines, and commit. All uncommitted.
+Status: **batch 1 done** (2026-11-22). The three patterns, the list–detail example, the critique and trial 2 are in; round 4 voted 4 liked, 1 unsure, 1 disliked (the phone landing page, which led to a rule); see [trial-2.md](trial-2.md#board). Next: batch 2, one pattern at a time when a project needs it.
 
 ## Goal
 

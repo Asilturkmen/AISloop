@@ -20,6 +20,7 @@ Each entry says where it came from:
 - What was liked in those heroes is the **atmosphere and imagery**, not the template furniture: the generic feature-card grid was retracted on a second look. *(voted: follow-up)*
 - On a landing page the atmosphere usually comes from the **imagery** (illustration or photo), more than from the type or the palette; it varies by product. So a landing page needs a real, product-specific image to carry it, not a generic gradient or glow. *(stated 2026-11-20)*
 - When no such image exists, a hero built from the product's real interface is acceptable. *(voted: r3i01 liked)*
+- On a phone, a landing page that reads as a wall of text is wrong, even when every part follows the rules: "it looks very monotonous; who reads all that text on a landing page". Each screen needs a visual moment. *(voted: r4i06 disliked, note)*
 
 ## Quality, not style, is what we ban *(stated 2026-11-20)*
 
