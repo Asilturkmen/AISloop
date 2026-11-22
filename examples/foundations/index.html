@@ -43,7 +43,7 @@ i.ph, i.ph-fill { font-size: var(--icon-size); line-height: 1; flex: none; }
   backdrop-filter: var(--material-bar-backdrop);
 }
 .nav-inner {
-  box-sizing: content-box; max-width: var(--width-content-wide); height: 100%; margin-inline: auto;
+  max-width: calc(var(--width-content-wide) + 2 * var(--gutter)); height: 100%; margin-inline: auto;
   padding-inline: var(--gutter);
   display: flex; align-items: center; gap: var(--space-32);
 }
@@ -71,7 +71,7 @@ i.ph, i.ph-fill { font-size: var(--icon-size); line-height: 1; flex: none; }
     linear-gradient(to top, var(--color-media-scrim), transparent 55%);
 }
 .hero-inner {
-  box-sizing: content-box; width: 100%; max-width: var(--width-content-wide); margin-inline: auto;
+  width: 100%; max-width: calc(var(--width-content-wide) + 2 * var(--gutter)); margin-inline: auto;
   padding: var(--space-80) var(--gutter) var(--space-80);
 }
 .hero h1 {
@@ -115,7 +115,6 @@ i.ph, i.ph-fill { font-size: var(--icon-size); line-height: 1; flex: none; }
 .eyebrow { font: var(--text-eyebrow); letter-spacing: var(--text-eyebrow-tracking); color: var(--color-label-secondary); margin-bottom: var(--space-12); }
 .showcase-head h2 { font: var(--text-display-2); letter-spacing: var(--text-display-2-tracking); text-wrap: balance; }
 .showcase-head > p:not(.eyebrow) { font: var(--text-lead); letter-spacing: var(--text-lead-tracking); margin-top: var(--space-16); color: var(--color-label-secondary); }
-.stage { }
 .points { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-48); margin-top: var(--space-64); padding: 0; list-style: none; }
 .points li { border-top: 1px solid var(--color-separator); padding-top: var(--space-20); }
 .points i { font-size: var(--icon-size-lg); color: var(--color-label-secondary); }
@@ -266,10 +265,10 @@ button.row:active { background: var(--color-fill-selected); }
   .showcase { padding-block: var(--space-64); }
   .hero-inner { padding-block: var(--space-64); }
   .nav-links .link:not(.signin) { display: none; }
-  .hero { align-items: flex-start; }
-  .hero-inner { padding-top: calc(var(--bar-height) + var(--space-64)); }
-  .hero-img { width: 100%; object-position: 78% 50%; }
-  .hero::before { background: linear-gradient(to bottom, var(--color-media-scrim-strong) 0 80%, transparent 100%); }
+  .hero { flex-direction: column; align-items: stretch; min-height: 0; background: var(--color-bg); }
+  .hero-inner { padding-top: calc(var(--bar-height) + var(--space-48)); padding-bottom: var(--space-24); }
+  .hero-img { position: relative; inset: auto; order: 2; width: 100%; height: auto; aspect-ratio: 4 / 5; object-position: 70% 50%; z-index: auto; -webkit-mask-image: linear-gradient(to bottom, transparent, var(--color-bg) 18%); mask-image: linear-gradient(to bottom, transparent, var(--color-bg) 18%); }
+  .hero::before { display: none; }
 }
 
 /* ---------- Demo controls ---------- */
@@ -333,7 +332,7 @@ button.row:active { background: var(--color-fill-selected); }
 
 <main id="top">
   <!-- Section A: landing hero -->
-  <section class="hero" data-density="comfortable" aria-labelledby="hero-title">
+  <section class="hero" data-density="comfortable" data-theme="dark" aria-labelledby="hero-title">
     <img class="hero-img" src="assets/hero.webp" width="1536" height="1024" fetchpriority="high"
          alt="An open field notebook and a pencil on a mossy rock above misty moorland at first light, a kestrel hovering far off.">
     <div class="hero-inner">
@@ -487,7 +486,8 @@ button.row:active { background: var(--color-fill-selected); }
   document.querySelectorAll('input[name="theme"]').forEach(function (i) { i.addEventListener('change', function () { setTheme(i.value); }); });
   document.querySelectorAll('input[name="density"]').forEach(function (i) { i.addEventListener('change', function () { setDensity(i.value); }); });
   var nav = document.querySelector('.nav'), hero = document.querySelector('.hero');
-  function navTheme() { if (window.scrollY < hero.offsetHeight - nav.offsetHeight) nav.setAttribute('data-theme', 'dark'); else nav.removeAttribute('data-theme'); }
+  var demo = document.querySelector('.demo');
+  function navTheme() { var over = window.scrollY < hero.offsetHeight - nav.offsetHeight / 2; [nav, demo].forEach(function (el) { if (over) el.setAttribute('data-theme', 'dark'); else el.removeAttribute('data-theme'); }); }
   window.addEventListener('scroll', navTheme, { passive: true }); navTheme();
   document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var dm = document.querySelector('.demo'); dm.open = false; } });
 })();
