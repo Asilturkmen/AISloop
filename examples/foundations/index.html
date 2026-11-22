@@ -1,0 +1,489 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel: field notes that keep up with you</title>
+<meta name="description" content="Kestrel is a fictional note-taking app for field researchers. This page is the live test of the AISloop design tokens.">
+<link rel="stylesheet" href="../../tokens/tokens.css">
+<!-- Icons: Phosphor Icons (MIT), regular weight, official web package pinned to 2.1.1 -->
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+/* Everything below uses AISloop tokens only: no literal colours, type sizes,
+   radii, shadows or durations. Gaps between components use the spacing scale. */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0;
+  background: var(--color-bg);
+  color: var(--color-label);
+  font: var(--text-body);
+  letter-spacing: var(--text-body-tracking);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p { margin: 0; }
+button, input { font: inherit; letter-spacing: inherit; color: inherit; }
+button { cursor: pointer; }
+a { color: var(--color-accent-text); }
+i.ph, i.ph-fill { font-size: var(--icon-size); line-height: 1; flex: none; }
+:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: clip; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* Landing sections are the expressive register: they stay on the comfortable
+   scale (data-density="comfortable" on the element). The density switch drives the app window. */
+
+/* ---------- Glass navigation ---------- */
+.nav {
+  position: fixed; inset: 0 0 auto 0; z-index: 20;
+  height: var(--bar-height);
+  background: var(--material-bar);
+  -webkit-backdrop-filter: var(--material-bar-backdrop);
+  backdrop-filter: var(--material-bar-backdrop);
+}
+.nav-inner {
+  max-width: var(--width-content-wide); height: 100%; margin-inline: auto;
+  padding-inline: var(--gutter);
+  display: flex; align-items: center; gap: var(--space-32);
+}
+.wordmark { display: flex; align-items: center; gap: var(--space-8); font: var(--text-headline); letter-spacing: var(--text-headline-tracking); color: var(--color-label); text-decoration: none; margin-right: auto; }
+.wordmark i { font-size: var(--icon-size-lg); }
+.nav a.link { font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking); color: var(--color-label); text-decoration: none; }
+.nav a.link:hover { text-decoration: underline; text-underline-offset: var(--space-4); }
+.nav-links { display: flex; gap: var(--space-32); align-items: center; }
+.nav .signin { color: var(--color-accent-text); font-weight: var(--weight-semibold); }
+
+/* ---------- Hero ---------- */
+.hero {
+  position: relative; isolation: isolate;
+  min-height: min(100svh, 56rem);
+  display: flex; align-items: flex-end;
+  color: var(--color-on-accent);
+  background: var(--material-bar-solid);
+  overflow: clip;
+}
+.hero-img { position: absolute; inset: 0 0 0 auto; width: 100%; height: 100%; object-fit: cover; object-position: 100% 50%; z-index: -2; }
+.hero::before {            /* scrim for the headline: token scrim, strongest where the text sits */
+  content: ""; position: absolute; inset: 0; z-index: -1;
+  background:
+    linear-gradient(to right, var(--color-scrim), transparent 65%),
+    linear-gradient(to top, var(--color-scrim), transparent 55%);
+}
+.hero-inner {
+  width: 100%; max-width: var(--width-content-wide); margin-inline: auto;
+  padding: var(--space-80) var(--gutter) var(--space-80);
+}
+.hero h1 {
+  font: var(--text-display-1); letter-spacing: var(--text-display-1-tracking);
+  max-width: 6.6em; text-wrap: balance;
+}
+.hero .lead {
+  font: var(--text-lead); letter-spacing: 0em;
+  margin-top: var(--space-24); max-width: 21em;
+  color: color-mix(in srgb, var(--color-on-accent) 90%, transparent);
+}
+.hero-actions { display: flex; flex-wrap: wrap; align-items: center; gap: var(--space-24); margin-top: var(--space-40); }
+.hero h1, .hero .lead, .hero-actions { animation: rise var(--duration-expressive) var(--ease-emphasized) both; }
+.hero .lead { animation-delay: var(--duration-short); }
+.hero-actions { animation-delay: var(--duration-medium); }
+@keyframes rise { from { opacity: 0; transform: translateY(calc(var(--space-24) * var(--motion-scale))); } }
+
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: var(--space-8);
+  min-height: var(--control-height); padding-inline: var(--space-20);
+  border: 0; border-radius: var(--radius-control);
+  font: var(--text-body); font-weight: var(--text-body-weight-emphasized); letter-spacing: var(--text-body-tracking);
+  text-decoration: none; text-align: center;
+  transition: background-color var(--duration-short) var(--ease-out), transform var(--duration-micro) var(--ease-out);
+}
+.btn-primary { background: var(--color-accent); color: var(--color-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { background: var(--color-accent-pressed); transform: scale(0.98); }
+.btn-tinted { background: var(--color-accent-tint); color: var(--color-accent-text); }
+.btn-tinted:hover { background: color-mix(in srgb, var(--color-accent) 18%, transparent); }
+.hero .btn-primary { min-height: calc(var(--control-height-lg) + var(--space-8)); padding-inline: var(--space-32); font: var(--text-headline); letter-spacing: var(--text-headline-tracking); border-radius: var(--radius-full); }
+.hero .quiet { font: var(--text-headline); letter-spacing: var(--text-headline-tracking); color: var(--color-on-accent); text-decoration: none; display: inline-flex; gap: var(--space-8); align-items: center; padding-block: var(--space-12); }
+.hero .quiet:hover { text-decoration: underline; text-underline-offset: var(--space-4); }
+.hero .quiet i { font-size: var(--icon-size-sm); transition: transform var(--duration-medium) var(--ease-out); }
+.hero .quiet:hover i { transform: translateX(var(--space-4)); }
+.hero :focus-visible { outline-color: var(--color-on-accent); }
+
+/* ---------- Preview section ---------- */
+.showcase { padding: var(--space-80) var(--gutter); }
+.showcase-inner { max-width: var(--width-content-wide); margin-inline: auto; }
+.showcase-head { max-width: var(--width-content-narrow); margin-bottom: var(--space-48); }
+.eyebrow { font: var(--text-eyebrow); color: var(--color-label-secondary); margin-bottom: var(--space-12); }
+.showcase-head h2 { font: var(--text-display-2); letter-spacing: var(--text-display-2-tracking); text-wrap: balance; }
+.showcase-head p { font: var(--text-lead); margin-top: var(--space-16); color: var(--color-label-secondary); }
+.stage {
+  background: var(--color-bg-secondary);
+  border-radius: var(--radius-4xl);
+  padding: var(--space-48);
+}
+.points { display: grid; grid-template-columns: repeat(3, 1fr); gap: var(--space-48); margin-top: var(--space-64); padding: 0; list-style: none; }
+.points li { border-top: 1px solid var(--color-separator); padding-top: var(--space-20); }
+.points i { font-size: var(--icon-size-lg); color: var(--color-accent-text); }
+.points h3 { font: var(--text-title-3); letter-spacing: var(--text-title-3-tracking); margin-top: var(--space-16); }
+.points p { font: var(--text-callout); letter-spacing: var(--text-callout-tracking); color: var(--color-label-secondary); margin-top: var(--space-8); max-width: 34ch; }
+.foot-wrap { padding: 0 var(--gutter) var(--space-48); }
+.page-foot { max-width: var(--width-content-wide); margin: 0 auto; padding: var(--space-24) 0 0; font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); border-top: 1px solid var(--color-separator); }
+
+/* ==========================================================================
+   App window (Section B). Follows html[data-density].
+   ========================================================================== */
+.window {
+  display: grid; grid-template-columns: var(--sidebar-width) minmax(0, 1fr);
+  background: var(--color-bg-grouped);
+  border-radius: var(--radius-3xl);
+  box-shadow: var(--shadow-floating);
+  overflow: clip;
+  color: var(--color-label);
+  font: var(--text-body); letter-spacing: var(--text-body-tracking);
+  min-height: 44rem;
+}
+.sidebar {
+  background: var(--color-bg-sidebar);
+  border-right: 1px solid var(--color-separator);
+  padding: var(--space-16) var(--space-12) var(--space-24);
+  display: flex; flex-direction: column; gap: var(--space-16);
+}
+.side-group h2 { font: var(--text-footnote); font-weight: var(--text-footnote-weight-emphasized); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); padding: var(--space-8) var(--space-12); }
+.side-list { list-style: none; margin: 0; padding: 0; display: grid; gap: var(--space-2); }
+.side-item {
+  display: flex; align-items: center; gap: var(--space-12);
+  width: 100%; min-height: var(--row-height-sidebar);
+  padding: var(--space-4) var(--space-12);
+  background: none; border: 0; border-radius: var(--radius-selection);
+  font: var(--text-body); letter-spacing: var(--text-body-tracking); text-align: left;
+}
+.side-item:hover { background: var(--color-fill-hover); }
+.side-item[aria-current="page"] { background: var(--color-fill-selected); font-weight: var(--text-body-weight-emphasized); }
+.side-item i { color: var(--color-label-secondary); }
+.side-item[aria-current="page"] i { color: var(--color-label); }
+.side-item .label { flex: 1; min-width: 0; overflow-wrap: break-word; }
+.side-item .count { font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); font-variant-numeric: tabular-nums; }
+
+.main { display: flex; flex-direction: column; min-width: 0; }
+.toolbar {
+  display: grid; grid-template-columns: 1fr auto 1fr; align-items: center; gap: var(--space-12);
+  min-height: var(--bar-height); padding-inline: var(--space-12);
+}
+.toolbar .tb-left, .toolbar .tb-right { display: flex; gap: var(--space-4); align-items: center; }
+.toolbar .tb-right { justify-content: flex-end; }
+.tb-title { text-align: center; min-width: 0; }
+.tb-title h1 { font: var(--text-headline); letter-spacing: var(--text-headline-tracking); }
+.tb-title p { font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); }
+.icon-btn {
+  display: inline-grid; place-items: center;
+  min-width: var(--hit-min); height: var(--bar-item-height); padding: 0 var(--space-8);
+  background: none; border: 0; border-radius: var(--radius-control); color: var(--color-label);
+  transition: background-color var(--duration-short) var(--ease-out);
+}
+.icon-btn:hover { background: var(--color-fill-hover); }
+.icon-btn:active { background: var(--color-fill-selected); }
+.icon-btn i { font-size: var(--icon-size); }
+
+.content { padding: var(--space-8) var(--pad-panel) var(--space-40); }
+.column { max-width: 40rem; margin-inline: auto; }
+
+.search {
+  display: flex; align-items: center; gap: var(--space-8);
+  min-height: var(--control-height); padding-inline: var(--space-12);
+  background: var(--color-fill-tertiary); border-radius: var(--radius-control);
+  color: var(--color-label-secondary);
+}
+.search input { flex: 1; min-width: 0; background: none; border: 0; padding: 0; height: 100%; min-height: var(--control-height); font-size: var(--text-field-size); color: var(--color-label); }
+.search input::placeholder { color: var(--color-label-secondary); opacity: 1; }
+.search input:focus-visible { outline: none; }
+.search:focus-within { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+.search input::-webkit-search-cancel-button { display: none; }
+
+.group { margin-top: calc(var(--gap-group) + var(--space-8)); }
+.group-head { font: var(--text-footnote); font-weight: var(--text-footnote-weight-emphasized); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); padding: 0 var(--pad-row-x) var(--space-8); }
+.card { background: var(--color-bg-grouped-item); border-radius: var(--radius-group); }
+.group-foot { font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); padding: var(--space-8) var(--pad-row-x) 0; }
+
+.row {
+  position: relative;
+  display: flex; align-items: center; gap: var(--space-16);
+  width: 100%; min-height: var(--row-height); padding: var(--space-8) var(--pad-row-x);
+  background: none; border: 0; border-radius: 0; text-align: left;
+  font: var(--text-body); letter-spacing: var(--text-body-tracking);
+  color: var(--color-label);
+}
+.row + .row::before { content: ""; position: absolute; top: 0; left: var(--pad-row-x); right: 0; height: 1px; background: var(--color-separator); }
+.card > .row:first-child { border-radius: var(--radius-group) var(--radius-group) 0 0; }
+.card > .row:last-child { border-radius: 0 0 var(--radius-group) var(--radius-group); }
+.card > .row:only-child { border-radius: var(--radius-group); }
+button.row:hover, label.row:hover { background: var(--color-fill-hover); }
+button.row:active { background: var(--color-fill-selected); }
+.row-label { flex: 1 1 0; min-width: 0; overflow-wrap: break-word; }
+.row-value { flex: 0 1 auto; max-width: 55%; text-align: right; color: var(--color-label-secondary); overflow-wrap: break-word; }
+.row .chev { color: var(--color-label-tertiary); font-size: var(--icon-size-sm); margin-right: calc(var(--space-4) * -1); }
+.row-lead { color: var(--color-label-secondary); }
+.row.danger { color: var(--color-red-text); }
+.row.danger .row-label { font-weight: var(--text-body-weight-emphasized); }
+
+/* Switch: accent only when on */
+.switch {
+  -webkit-appearance: none; appearance: none; margin: 0; flex: none; cursor: pointer;
+  --h: calc(var(--control-height-sm) - var(--space-4));
+  position: relative; width: calc(var(--h) * 1.65); height: var(--h);
+  border-radius: var(--radius-full); background: var(--color-fill);
+  transition: background-color var(--duration-medium) var(--ease-out);
+}
+.switch::after {
+  content: ""; position: absolute; top: var(--space-2); left: var(--space-2);
+  width: calc(var(--h) - var(--space-4)); height: calc(var(--h) - var(--space-4));
+  border-radius: var(--radius-full); background: var(--color-on-accent); box-shadow: var(--shadow-raised);
+  transition: transform var(--duration-medium) var(--ease-out);
+}
+.switch:checked { background: var(--color-accent); }
+.switch:checked::after { transform: translateX(calc(var(--h) * 0.65)); }
+
+/* Segmented control */
+.segmented { display: inline-flex; flex: none; padding: var(--space-2); gap: var(--space-2); background: var(--color-fill-tertiary); border-radius: var(--radius-control); border: 0; margin: 0; min-width: 0; }
+.segmented label { position: relative; display: grid; place-items: center; min-height: calc(var(--control-height-sm) - var(--space-4)); padding-inline: var(--space-12); border-radius: var(--radius-control); font: var(--text-callout); letter-spacing: var(--text-callout-tracking); color: var(--color-label); cursor: pointer; transition: background-color var(--duration-short) var(--ease-out); white-space: nowrap; }
+.segmented input { position: absolute; inset: 0; opacity: 0; margin: 0; cursor: pointer; }
+.segmented label:has(input:checked) { background: var(--color-bg-grouped-item); box-shadow: var(--shadow-raised); font-weight: var(--text-callout-weight-emphasized); }
+.segmented label:has(input:focus-visible) { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+
+/* Empty state */
+.empty { display: grid; justify-items: center; text-align: center; gap: var(--space-4); padding: var(--space-32) var(--space-24); }
+.empty > i { font-size: calc(var(--icon-size-lg) * 1.6); color: var(--color-label-tertiary); margin-bottom: var(--space-8); }
+.empty h3 { font: var(--text-headline); letter-spacing: var(--text-headline-tracking); }
+.empty p { font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking); color: var(--color-label-secondary); max-width: 30ch; }
+.empty .btn { margin-top: var(--space-12); }
+
+.actions { margin-top: calc(var(--gap-group) + var(--space-8)); display: flex; justify-content: center; }
+
+/* ---------- Narrow: sidebar collapses, list goes full width ---------- */
+@media (max-width: 700px) {
+  .window { grid-template-columns: minmax(0, 1fr); min-height: 0; }
+  .sidebar, .tb-left .wide-only { display: none; }
+  .content { padding-inline: var(--space-16); }
+  .row-value { max-width: 50%; }
+  .stage { padding: var(--space-12); border-radius: var(--radius-3xl); }
+  .points { grid-template-columns: 1fr; gap: var(--space-32); margin-top: var(--space-48); }
+  .showcase { padding-block: var(--space-64); }
+  .hero-inner { padding-block: var(--space-64); }
+  .nav-links .link:not(.signin) { display: none; }
+  .hero { align-items: flex-start; }
+  .hero-inner { padding-top: calc(var(--bar-height) + var(--space-64)); }
+  .hero-img { width: 100%; object-position: 78% 50%; }
+  .hero::before { background: linear-gradient(to bottom, var(--color-scrim), var(--color-scrim) 40%, transparent 85%); }
+}
+
+/* ---------- Demo controls ---------- */
+.demo { position: fixed; z-index: 30; top: calc(var(--bar-height) + var(--space-12)); right: var(--gutter); }
+.demo summary {
+  list-style: none; display: inline-flex; align-items: center; gap: var(--space-8);
+  min-height: var(--control-height-lg); padding-inline: var(--space-12);
+  background: var(--material-menu); -webkit-backdrop-filter: var(--material-menu-backdrop); backdrop-filter: var(--material-menu-backdrop);
+  border-radius: var(--radius-full); box-shadow: var(--shadow-floating); cursor: pointer;
+  font: var(--text-callout); letter-spacing: var(--text-callout-tracking); color: var(--color-label);
+}
+.demo summary::-webkit-details-marker { display: none; }
+.demo-panel {
+  position: absolute; top: calc(100% + var(--space-8)); right: 0; width: max-content; max-width: calc(100vw - 2 * var(--gutter));
+  display: grid; gap: var(--space-16); padding: var(--space-16);
+  background: var(--material-menu); -webkit-backdrop-filter: var(--material-menu-backdrop); backdrop-filter: var(--material-menu-backdrop);
+  border-radius: var(--radius-menu); box-shadow: var(--shadow-overlay); color: var(--color-label);
+}
+.demo-panel .field { display: grid; gap: var(--space-8); border: 0; margin: 0; padding: 0; min-width: 0; }
+.demo-panel legend { font: var(--text-footnote); font-weight: var(--text-footnote-weight-emphasized); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); padding: 0; margin-bottom: var(--space-8); }
+
+@media (prefers-reduced-motion: reduce) {
+  :root { --motion-scale: 0; }
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+}
+</style>
+</head>
+<body>
+
+<header class="nav" data-density="comfortable">
+  <div class="nav-inner">
+    <a class="wordmark" href="#top" aria-label="Kestrel home"><i class="ph ph-bird" aria-hidden="true"></i>Kestrel</a>
+    <nav class="nav-links" aria-label="Primary">
+      <a class="link" href="#app">The notebook</a>
+      <a class="link" href="#points">Offline</a>
+      <a class="link signin" href="#top">Sign in</a>
+    </nav>
+  </div>
+</header>
+
+<details class="demo" data-density="compact">
+  <summary><i class="ph ph-sliders-horizontal" aria-hidden="true"></i>View options</summary>
+  <div class="demo-panel">
+    <fieldset class="field segmented-field" id="theme-field">
+      <legend>Theme</legend>
+      <div class="segmented">
+        <label><input type="radio" name="theme" value="system" checked>System</label>
+        <label><input type="radio" name="theme" value="light">Light</label>
+        <label><input type="radio" name="theme" value="dark">Dark</label>
+      </div>
+    </fieldset>
+    <fieldset class="field" id="density-field">
+      <legend>Density (app window)</legend>
+      <div class="segmented">
+        <label><input type="radio" name="density" value="comfortable" checked>Comfortable</label>
+        <label><input type="radio" name="density" value="compact">Compact</label>
+      </div>
+    </fieldset>
+  </div>
+</details>
+
+<main id="top">
+  <!-- Section A: landing hero -->
+  <section class="hero" data-density="comfortable" aria-labelledby="hero-title">
+    <img class="hero-img" src="assets/hero.webp" width="1536" height="1024" fetchpriority="high"
+         alt="An open field notebook and a pencil on a mossy rock above misty moorland at first light, a kestrel hovering far off.">
+    <div class="hero-inner">
+      <h1 id="hero-title">Field notes that keep up with you.</h1>
+      <p class="lead">Every line is stamped with place, time and weather, works with no signal for weeks, and finds itself by where you were standing.</p>
+      <div class="hero-actions">
+        <a class="btn btn-primary" href="#app">Start a field notebook</a>
+        <a class="quiet" href="#points">How it works<i class="ph ph-arrow-right" aria-hidden="true"></i></a>
+      </div>
+    </div>
+  </section>
+
+  <!-- Section A, below the hero + Section B: the live app -->
+  <section class="showcase" id="app" aria-labelledby="showcase-title">
+    <div class="showcase-inner">
+      <div class="showcase-head" data-density="comfortable">
+        <p class="eyebrow">The notebook</p>
+        <h2 id="showcase-title">Settings you can set with cold hands.</h2>
+        <p>Big targets, plain words, nothing that needs a signal. This is the real screen, and every control on it works.</p>
+      </div>
+
+      <div class="stage">
+        <div class="window" data-density-follow>
+          <aside class="sidebar" aria-label="Sidebar">
+            <nav class="side-group" aria-labelledby="sg-library">
+              <h2 id="sg-library">Library</h2>
+              <ul class="side-list">
+                <li><button class="side-item" type="button"><i class="ph ph-notebook" aria-hidden="true"></i><span class="label">All notes</span><span class="count">214</span></button></li>
+                <li><button class="side-item" type="button"><i class="ph ph-binoculars" aria-hidden="true"></i><span class="label">Sightings</span><span class="count">63</span></button></li>
+                <li><button class="side-item" type="button"><i class="ph ph-path" aria-hidden="true"></i><span class="label">Transects</span><span class="count">18</span></button></li>
+                <li><button class="side-item" type="button"><i class="ph ph-image" aria-hidden="true"></i><span class="label">Photos</span><span class="count">97</span></button></li>
+              </ul>
+            </nav>
+            <nav class="side-group" aria-labelledby="sg-books">
+              <h2 id="sg-books">Notebooks</h2>
+              <ul class="side-list">
+                <li><button class="side-item" type="button"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Moorland 2026</span></button></li>
+                <li><button class="side-item" type="button"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Wetland survey</span></button></li>
+                <li><button class="side-item" type="button"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Coastal cliff transects, spring season</span></button></li>
+              </ul>
+            </nav>
+            <nav class="side-group" aria-labelledby="sg-account">
+              <h2 id="sg-account">Account</h2>
+              <ul class="side-list">
+                <li><button class="side-item" type="button" aria-current="page"><i class="ph-fill ph-gear" aria-hidden="true"></i><span class="label">Settings</span></button></li>
+              </ul>
+            </nav>
+          </aside>
+
+          <div class="main">
+            <div class="toolbar">
+              <div class="tb-left"></div>
+              <div class="tb-title">
+                <h1>Settings</h1>
+                <p>Moorland 2026 · synced</p>
+              </div>
+              <div class="tb-right">
+                <button class="icon-btn" type="button" aria-label="Share notebook"><i class="ph ph-export" aria-hidden="true"></i></button>
+                <button class="icon-btn" type="button" aria-label="More"><i class="ph ph-dots-three" aria-hidden="true"></i></button>
+              </div>
+            </div>
+
+            <div class="content">
+              <div class="column">
+                <label class="search">
+                  <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+                  <span class="visually-hidden">Search settings</span>
+                  <input type="search" placeholder="Search settings" autocomplete="off">
+                </label>
+
+                <section class="group" aria-labelledby="g-capture">
+                  <h2 class="group-head" id="g-capture">Capture</h2>
+                  <div class="card">
+                    <label class="row"><span class="row-label">Stamp every note with place, time and weather while I am writing</span><input class="switch" type="checkbox" role="switch" checked></label>
+                    <label class="row"><span class="row-label">Record a GPS track</span><input class="switch" type="checkbox" role="switch"></label>
+                    <div class="row" role="group" aria-labelledby="units-label"><span class="row-label" id="units-label">Units</span>
+                      <fieldset class="segmented"><legend class="visually-hidden">Units</legend>
+                        <label><input type="radio" name="units" value="metric" checked>Metric</label>
+                        <label><input type="radio" name="units" value="imperial">Imperial</label>
+                      </fieldset>
+                    </div>
+                  </div>
+                  <p class="group-foot">Location stays on this device until you choose to sync it.</p>
+                </section>
+
+                <section class="group" aria-labelledby="g-sync">
+                  <h2 class="group-head" id="g-sync">Sync and language</h2>
+                  <div class="card">
+                    <button class="row" type="button"><span class="row-label">Senkronizasyon</span><span class="row-value">Wi-Fi only</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></button>
+                    <button class="row" type="button"><span class="row-label">Language</span><span class="row-value">Türkçe</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></button>
+                    <button class="row" type="button"><span class="row-label">Storage on this device</span><span class="row-value">2.4 GB of 5 GB</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></button>
+                  </div>
+                </section>
+
+                <section class="group" aria-labelledby="g-shared">
+                  <h2 class="group-head" id="g-shared">Shared notebooks</h2>
+                  <div class="card">
+                    <div class="empty">
+                      <i class="ph ph-users-three" aria-hidden="true"></i>
+                      <h3>No shared notebooks</h3>
+                      <p>Invite a colleague to a notebook and it will show up here.</p>
+                      <button class="btn btn-tinted" type="button">Invite a colleague</button>
+                    </div>
+                  </div>
+                </section>
+
+                <section class="group" aria-labelledby="g-danger">
+                  <h2 class="visually-hidden" id="g-danger">Danger zone</h2>
+                  <div class="card">
+                    <button class="row danger" type="button"><span class="row-label">Delete all notes from this device</span></button>
+                  </div>
+                  <p class="group-foot">Notes that have already synced stay in your account.</p>
+                </section>
+
+                <div class="actions"><button class="btn btn-primary" type="button">Back up now</button></div>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <ul class="points" id="points" data-density="comfortable">
+        <li><i class="ph ph-map-pin-area" aria-hidden="true"></i><h3>Notes know where they were written</h3><p>Place, time, temperature and cloud cover ride along with every line, so the north gate never gets mixed up with the south.</p></li>
+        <li><i class="ph ph-cloud-slash" aria-hidden="true"></i><h3>Weeks without signal</h3><p>Sync waits for Wi-Fi. Until then nothing is lost, and nothing sits behind a spinner.</p></li>
+        <li><i class="ph ph-table" aria-hidden="true"></i><h3>Out as a table</h3><p>Export a notebook as CSV with coordinates, or as a plain-text field log your supervisor can read.</p></li>
+      </ul>
+    </div>
+  </section>
+</main>
+
+<footer class="foot-wrap" data-density="comfortable"><p class="page-foot">Kestrel is a fictional product. This page is the live test of the AISloop design tokens. Icons by Phosphor (MIT).</p></footer>
+
+<script>
+(function () {
+  var root = document.documentElement;
+  var params = new URLSearchParams(location.search);
+  function setTheme(v) { if (v === 'light' || v === 'dark') root.setAttribute('data-theme', v); else root.removeAttribute('data-theme'); }
+  function setDensity(v) { root.setAttribute('data-density', v === 'compact' ? 'compact' : 'comfortable'); }
+  function check(name, v) { var el = document.querySelector('input[name="' + name + '"][value="' + v + '"]'); if (el) el.checked = true; }
+
+  var t = params.get('theme'); if (t === 'light' || t === 'dark') { setTheme(t); check('theme', t); }
+  var d = params.get('density'); if (d === 'compact' || d === 'comfortable') { setDensity(d); check('density', d); }
+
+  document.querySelectorAll('input[name="theme"]').forEach(function (i) { i.addEventListener('change', function () { setTheme(i.value); }); });
+  document.querySelectorAll('input[name="density"]').forEach(function (i) { i.addEventListener('change', function () { setDensity(i.value); }); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') { var dm = document.querySelector('.demo'); dm.open = false; } });
+})();
+</script>
+</body>
+</html>
