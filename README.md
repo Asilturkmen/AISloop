@@ -6,7 +6,7 @@
 
 [Türkçe](README.tr.md)
 
-> **Status: foundations ready.** Tokens, foundation rules and a live example page are in place; the `AGENTS.md` entry point comes next. See [Roadmap](#roadmap).
+> **Status: usable.** Hand an agent this repo and it starts at [`AGENTS.md`](AGENTS.md). Foundations, tokens, a live example and a checklist are in place; patterns come next. See [Roadmap](#roadmap).
 
 ---
 
@@ -72,16 +72,19 @@ Apple's fonts, icons and UI kits are licensed for Apple platforms only. AISloop 
 
 | Path | What's inside |
 |---|---|
+| [`AGENTS.md`](AGENTS.md) | Where an agent starts: what to read, in which order, and how to set AISloop up in a project |
 | [`preferences.md`](preferences.md) | The taste profile every rule follows |
 | [`decisions.md`](decisions.md) | Every decision, dated, with its reason |
 | [`foundations/`](foundations/) | The rules: type, colour, dark mode, layout, radii, materials, motion, icons, accessibility |
 | [`tokens/`](tokens/) | Every value as CSS custom properties, plus a Tailwind preset |
 | [`examples/`](examples/) | A live page built only from the tokens, in light and dark, at both densities |
+| [`checklist.md`](checklist.md) | What to check before calling a design done, including the slop test |
+| [`templates/`](templates/) | `DESIGN.md`, the file a project keeps its AISloop choices in |
 | [`research/`](research/) | The evidence: HIG digest, measurements, sources, vote results |
 | [`tools/`](tools/) | Screenshot tool used for research and for verifying designs |
 | [`apple-native/`](apple-native/) | Only for apps built solely for Apple platforms (SwiftUI/UIKit). Everything else is for any project. |
 
-Components, patterns and the `AGENTS.md` entry point arrive as the roadmap moves on.
+Patterns (settings, list–detail, forms, landing pages…) arrive as the roadmap moves on.
 
 ## Roadmap
 
@@ -90,7 +93,7 @@ Components, patterns and the `AGENTS.md` entry point arrive as the roadmap moves
 | 0 | Skeleton, licence, decision log | done |
 | 1 | Taste calibration: research, review board, 51 votes | done |
 | 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | done |
-| 3 | `AGENTS.md` entry point and the final structure | next |
+| 3 | `AGENTS.md` entry point and the final structure, tested with a fresh agent | in progress |
 | 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | planned |
 
 ## Disclaimer

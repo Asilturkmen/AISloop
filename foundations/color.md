@@ -40,6 +40,7 @@ The owner voted "depends" (p04).
 - Nine hues: red, orange, yellow, green, teal, blue, indigo, purple, pink.
 - `--color-<hue>` is the fill (a dot, a tile, a bar). `--color-<hue>-text` is the version for text and thin lines. **Never put text in the fill colour.**
 - Fixed meanings: red = destructive or error, orange = warning, green = success. Don't use these three for decoration.
+- Destructive actions (delete, remove, sign out of everything) use `--color-red-text` as the label: a row in a grouped list, a text button, or a button whose surface is a background layer (`--color-bg-secondary` or `--color-bg-tertiary`), where the `-text` colours are verified. Not on the translucent `--color-fill` tokens (red text on them falls below 4.5:1, worst in dark), and never white text on the red fill (it fails 4.5:1).
 - Switches that are on use the accent, not green (one accent per view keeps the screen calm; green stays free for success).
 - Colour is never the only signal. Pair it with a label, an icon or a position.
 

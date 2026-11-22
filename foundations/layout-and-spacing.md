@@ -64,6 +64,8 @@ Two presets. A project picks one for its app UI and sets it once on `<html>`. *(
 
 - Gaps, not margins, between siblings: `display: grid` or `flex` with `gap: var(--gap-group)`.
 - Rows: `min-height: var(--row-height); padding: var(--pad-row-y) var(--pad-row-x);`. Text wraps; the row grows.
+  - A row that holds a full-size control (a text field, a select, a full-height button): `padding-block: calc((var(--row-height) - var(--control-height)) / 2)`, so the row stays on height (comfortable 4px, compact 2px).
+  - A title + subtitle row: `min-height: var(--row-height-2line); padding-block: var(--space-8);`.
 - A page column: `width: min(100% - 2 * var(--gutter), var(--width-content)); margin-inline: auto;`.
 - Custom properties can't be used inside media queries; write `@media (max-width: 700px)` literally.
 - Tailwind: `px-gutter`, `gap-groups`, `px-row-x py-row-y`, `p-group`, `max-w-content`, `h-row`, `min-h-hit`. Mind the plural: the gap between cards (`--gap-group`) is `gap-groups`; `gap-group` also exists but means `--pad-group` (16px, not 32). Likewise `gap-controls` is `--gap-control`.
@@ -73,7 +75,7 @@ Two presets. A project picks one for its app UI and sets it once on `<html>`. *(
 - Don't mix densities within one app screen, except a deliberately compact panel.
 - Don't use a compact screen as the showcase on a landing page.
 - Don't space by eye. If two gaps look the same, they must be the same token.
-- Don't fill space with cards for the sake of it. Empty space is part of the design.
+- Don't fill space with cards for the sake of it. Grouped lists in app UI are cards with a job; a landing page doesn't need a grid of feature cards. Empty space is part of the design.
 - Don't set fixed heights on anything that holds text.
 
 ## Related

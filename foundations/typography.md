@@ -60,6 +60,8 @@ Sizes are fluid: the minimum at a 390px phone, the maximum at about 1440px.
 | A longer headline, a tool or service for work, documentation, or a hero that shares the screen with a product screenshot | Medium (to 64px) | Semibold 600 |
 | Mixed (short headline, sober product) | Large | Semibold 600 |
 
+If two rows seem to fit, the hero's layout decides the size: a hero that shares the screen with a product screenshot gets the medium size, whatever the headline length. Weight follows tone.
+
 Medium and semibold are overrides, set once in the page's CSS after `tokens.css`:
 
 ```css

@@ -61,6 +61,7 @@ Use the familiar metaphor. Phosphor names for Apple's standard action symbols:
 ## Web translation
 
 - Inline SVG from `@phosphor-icons/core`, the web font from `@phosphor-icons/web` (`<i class="ph ph-gear">`, `<i class="ph-fill ph-gear">`), or the framework package. Pin the version.
+- For production or offline use, self-host: install the package and serve its files, or inline the SVGs you use. A CDN link (as in the example page) is fine for prototypes.
 - Decorative icons next to a text label: `aria-hidden="true"`. Icon-only controls: a label on the control, not on the icon.
 - Line icons up with text by their optical centre: `display: inline-flex; align-items: center; gap: var(--space-8);`.
 

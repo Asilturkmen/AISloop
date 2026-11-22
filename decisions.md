@@ -43,3 +43,6 @@ It reproduces how SF Symbols works as a system (matching weights, outline and fi
 
 **D-012 · 2026-11-22 · Boards ask only real taste questions.**
 Details that are minor, or that obviously change from project to project, are decided by the lead, recorded with the reason, and reported to the owner in a line; they don't go to a board or a follow-up question. Owner, after round 2: "don't make me pick everything; if something obviously changes per project or is very minor, you can decide it". Extends the round-1 rule that page-type decisions are never asked.
+
+**D-013 · 2026-11-22 · Entry point and project setup.**
+Agents start at `AGENTS.md`: a short reading order (preferences, foundations index, the foundation files the task needs, tokens, the example), how to tell which parts apply (`apple-native/` only for Apple-only native apps, described by the folder, not enforced by a rule, per the owner's wish), register first, project choices made by the agent without asking, image order, interface language, and `checklist.md` before calling anything done. A project that keeps AISloop copies `tokens.css` unedited, overrides in its own CSS, records its choices in `DESIGN.md` (from `templates/DESIGN.md`) and adds one line to its agent instructions. Tested with a fresh agent on a fictional product (`research/03-entry-point/trial-1.md`); its gaps were fixed the same day.
