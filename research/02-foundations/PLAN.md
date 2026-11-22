@@ -1,6 +1,13 @@
 # Phase 2 plan: foundations
 
-Status: **ready to start** (prepared 2026-11-20). Read this first when resuming.
+Status: **steps 1–4 done, waiting for the owner's round-2 votes** (2026-11-22). Read this first when resuming.
+
+## Progress
+- Step 1 done: `tokens/tokens.css`, `tokens/tailwind.preset.js`, `tokens-rationale.md` (all required contrast checks pass; re-run the checker after any token change).
+- Step 2 done: `examples/foundations/index.html` (fictional product Kestrel; hero image generated with Codex).
+- Step 3 done: two independent critique rounds (`critique-1.md`, `critique-2.md`); all blockers fixed, axe clean, no overflow at 390/1024/1440.
+- Step 4 in progress: round 2 added to the same board (6 controlled A/B pairs + 5 overall images). Votes land in the board's `votes` collection with ids `r2p01`–`r2p06` and `r2i01`–`r2i05` (`r2i05` = hero image fit).
+- Next: read the round-2 votes, adjust tokens, write `foundations/` rule files, record decisions (step 5).
 
 ## Goal
 Turn the research into the first usable foundation of AISloop:
