@@ -6,7 +6,7 @@
 
 [English](README.md)
 
-> **Durum: araştırma aşaması.** Temeller araştırıldı ve ölçüldü; ajanın uyacağı kurallar şimdi yazılıyor. Bkz. [Yol haritası](#yol-haritası).
+> **Durum: temeller hazır.** Token'lar, temel kurallar ve canlı örnek sayfa yerinde; sırada `AGENTS.md` giriş kapısı var. Bkz. [Yol haritası](#yol-haritası).
 >
 > Kuralların asıl hâli İngilizcedir, çünkü onları okuyacak olan ajanlardır. Bu sayfa Türkçe tanıtımdır.
 
@@ -76,11 +76,14 @@ Apple'ın yazı tipleri, ikonları ve UI kitleri yalnız Apple platformları iç
 |---|---|
 | [`preferences.md`](preferences.md) | Her kuralın uyduğu zevk profili |
 | [`decisions.md`](decisions.md) | Her karar, tarihi ve gerekçesiyle |
+| [`foundations/`](foundations/) | Kurallar: yazı, renk, koyu mod, yerleşim, köşeler, malzeme, hareket, ikonlar, erişilebilirlik |
+| [`tokens/`](tokens/) | Bütün değerler CSS değişkeni olarak, ayrıca Tailwind ön ayarı |
+| [`examples/`](examples/) | Yalnız token'larla yapılmış canlı sayfa: açık ve koyu, iki yoğunlukta |
 | [`research/`](research/) | Kanıtlar: HIG özeti, ölçümler, kaynaklar, oy sonuçları |
 | [`tools/`](tools/) | Araştırma ve tasarım doğrulama için ekran görüntüsü aracı |
 | [`apple-native/`](apple-native/) | Yalnız sadece Apple platformları için yapılan uygulamalar (SwiftUI/UIKit). Geri kalan her şey her proje için. |
 
-Temeller, bileşenler, kalıplar, token'lar ve `AGENTS.md` giriş kapısı yol haritası ilerledikçe eklenecek.
+Bileşenler, kalıplar ve `AGENTS.md` giriş kapısı yol haritası ilerledikçe eklenecek.
 
 ## Yol haritası
 
@@ -88,8 +91,8 @@ Temeller, bileşenler, kalıplar, token'lar ve `AGENTS.md` giriş kapısı yol h
 |---|---|---|
 | 0 | İskelet, lisans, karar kaydı | bitti |
 | 1 | Zevk kalibrasyonu: araştırma, pano, 51 oy | bitti |
-| 2 | Temeller: yazı, renk, boşluk, köşeler, malzeme, hareket → token'lar + canlı örnek sayfa | sırada |
-| 3 | `AGENTS.md` giriş kapısı ve son yapı | planlandı |
+| 2 | Temeller: yazı, renk, boşluk, köşeler, malzeme, hareket → token'lar + canlı örnek sayfa | bitti |
+| 3 | `AGENTS.md` giriş kapısı ve son yapı | sırada |
 | 4 | Kalıplar tek tek (ayarlar, liste-detay, formlar, giriş sayfası…), her biri gerçek bir projede denenerek | planlandı |
 
 ## Uyarı

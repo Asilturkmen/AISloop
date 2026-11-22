@@ -478,8 +478,9 @@
      Apple's #007aff / #0088ff give white text only 4.0 / 3.5:1, so our fill
      is a little deeper (white on it 4.8:1). Links and accent-coloured text
      use --color-accent-text (>= 5:1 on every layer). To rebrand, override
-     --color-accent and --color-accent-text in all four colour blocks
-     (light, dark, both increased-contrast) and re-run the contrast check;
+     --color-accent and --color-accent-text in all six colour blocks
+     (light; dark twice: system and data-theme; light increased contrast;
+     dark increased contrast twice) and re-run the contrast check;
      hover, pressed, tint and focus ring follow. */
   --color-accent: #0a6ee8;
   --color-on-accent: #ffffff;

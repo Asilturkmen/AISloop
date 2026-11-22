@@ -1,13 +1,13 @@
 # Phase 2 plan: foundations
 
-Status: **steps 1–4 done, waiting for the owner's round-2 votes** (2026-11-22). Read this first when resuming.
+Status: **Phase 2 done** (2026-11-22). Next is Phase 3: `AGENTS.md` and the final structure (see "Not in this phase" below).
 
 ## Progress
 - Step 1 done: `tokens/tokens.css`, `tokens/tailwind.preset.js`, `tokens-rationale.md` (all required contrast checks pass; re-run the checker after any token change).
 - Step 2 done: `examples/foundations/index.html` (fictional product Kestrel; hero image generated with Codex).
 - Step 3 done: two independent critique rounds (`critique-1.md`, `critique-2.md`); all blockers fixed, axe clean, no overflow at 390/1024/1440.
-- Step 4 in progress: round 2 added to the same board (6 controlled A/B pairs + 5 overall images). Votes land in the board's `votes` collection with ids `r2p01`–`r2p06` and `r2i01`–`r2i05` (`r2i05` = hero image fit).
-- Next: read the round-2 votes, adjust tokens, write `foundations/` rule files, record decisions (step 5).
+- Step 4 done: round 2 on the same board (6 controlled A/B pairs + 5 overall images), 11 of 11 answered. Results: `results-round2.md`.
+- Step 5 done: no token values changed (the votes kept the defaults; three axes became project choices with guidance). Nine rule files plus an index in `foundations/`, decisions D-010 to D-012, `preferences.md` updated, phone hero crop fixed in the example page.
 
 ## Goal
 Turn the research into the first usable foundation of AISloop:

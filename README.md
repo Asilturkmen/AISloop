@@ -6,7 +6,7 @@
 
 [Türkçe](README.tr.md)
 
-> **Status: research phase.** The foundations are researched and measured; the rules an agent follows are being written now. See [Roadmap](#roadmap).
+> **Status: foundations ready.** Tokens, foundation rules and a live example page are in place; the `AGENTS.md` entry point comes next. See [Roadmap](#roadmap).
 
 ---
 
@@ -74,11 +74,14 @@ Apple's fonts, icons and UI kits are licensed for Apple platforms only. AISloop 
 |---|---|
 | [`preferences.md`](preferences.md) | The taste profile every rule follows |
 | [`decisions.md`](decisions.md) | Every decision, dated, with its reason |
+| [`foundations/`](foundations/) | The rules: type, colour, dark mode, layout, radii, materials, motion, icons, accessibility |
+| [`tokens/`](tokens/) | Every value as CSS custom properties, plus a Tailwind preset |
+| [`examples/`](examples/) | A live page built only from the tokens, in light and dark, at both densities |
 | [`research/`](research/) | The evidence: HIG digest, measurements, sources, vote results |
 | [`tools/`](tools/) | Screenshot tool used for research and for verifying designs |
 | [`apple-native/`](apple-native/) | Only for apps built solely for Apple platforms (SwiftUI/UIKit). Everything else is for any project. |
 
-Foundations, components, patterns, tokens and the `AGENTS.md` entry point arrive as the roadmap moves on.
+Components, patterns and the `AGENTS.md` entry point arrive as the roadmap moves on.
 
 ## Roadmap
 
@@ -86,8 +89,8 @@ Foundations, components, patterns, tokens and the `AGENTS.md` entry point arrive
 |---|---|---|
 | 0 | Skeleton, licence, decision log | done |
 | 1 | Taste calibration: research, review board, 51 votes | done |
-| 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | next |
-| 3 | `AGENTS.md` entry point and the final structure | planned |
+| 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | done |
+| 3 | `AGENTS.md` entry point and the final structure | next |
 | 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | planned |
 
 ## Disclaimer
