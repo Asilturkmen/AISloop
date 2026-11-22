@@ -38,3 +38,5 @@ Not changed: the agent noted the local files were uncommitted, so the GitHub cop
 ## Board
 
 Round 3 on the same review board: four images (landing desktop light, landing phone dark, settings desktop light, settings phone dark), like / dislike / unsure, with one question: is the real interface enough for the hero, or is a product-specific image necessary? Votes: ids `r3i01`–`r3i04`.
+
+**Result (2026-11-22): 4 of 4 liked, no notes.** The design an agent produced from AISloop alone was accepted on both screens, both themes and both widths. On the one real question (r3i01), a hero built from the product's real interface was accepted when no product image exists, so the image order in `AGENTS.md` stays as it is: a product-specific image is still preferred, the real interface is an accepted fallback.

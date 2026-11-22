@@ -93,8 +93,8 @@ Patterns (settings, list–detail, forms, landing pages…) arrive as the roadma
 | 0 | Skeleton, licence, decision log | done |
 | 1 | Taste calibration: research, review board, 51 votes | done |
 | 2 | Foundations: type, colour, spacing, radii, materials, motion → tokens + a live example page | done |
-| 3 | `AGENTS.md` entry point and the final structure, tested with a fresh agent | in progress |
-| 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | planned |
+| 3 | `AGENTS.md` entry point and the final structure, tested with a fresh agent | done |
+| 4 | Patterns one at a time (settings, list–detail, forms, landing…), each tested in a real project | next |
 
 ## Disclaimer
 

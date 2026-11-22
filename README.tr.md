@@ -95,8 +95,8 @@ Kalıplar (ayarlar, liste-detay, formlar, giriş sayfaları…) yol haritası il
 | 0 | İskelet, lisans, karar kaydı | bitti |
 | 1 | Zevk kalibrasyonu: araştırma, pano, 51 oy | bitti |
 | 2 | Temeller: yazı, renk, boşluk, köşeler, malzeme, hareket → token'lar + canlı örnek sayfa | bitti |
-| 3 | `AGENTS.md` giriş kapısı ve son yapı, yeni bir ajanla denendi | sürüyor |
-| 4 | Kalıplar tek tek (ayarlar, liste-detay, formlar, giriş sayfası…), her biri gerçek bir projede denenerek | planlandı |
+| 3 | `AGENTS.md` giriş kapısı ve son yapı, yeni bir ajanla denendi | bitti |
+| 4 | Kalıplar tek tek (ayarlar, liste-detay, formlar, giriş sayfası…), her biri gerçek bir projede denenerek | sırada |
 
 ## Uyarı
 
