@@ -37,7 +37,7 @@ Sizes are in rem, so the browser's text-size setting still works. Compact never 
 
 ### Titles in app UI
 
-- Default: a **small centred title in the bar** (`--text-headline`), content starts right below. *(voted: p02 B)*
+- Default: a **small centred title in the bar** (`--text-headline`), content starts right below. *(voted: p02 B)* In the list pane of a desktop split view the title may lead instead, as in Mail, to leave room for the pane's actions.
 - A large left-aligned title (`--text-large-title` or `--text-title-1`) is the exception: a top-level page that is a destination of its own (a library, a home screen), not a settings pane or a detail view.
 
 ### Display scale (landing and product pages)
@@ -83,6 +83,7 @@ Whichever you choose, the hero headline has to fit in three lines or fewer at ev
 
 - Every text style has its own letter-spacing token (`--text-body-tracking` …) from Apple's size-specific table: tighter for large text, slightly open for small text. Always set it together with the font:
   `font: var(--text-body); letter-spacing: var(--text-body-tracking);`
+  To make forgetting it harder, a project can define one class per style it uses, e.g. `.t-body { font: var(--text-body); letter-spacing: var(--text-body-tracking); }`.
 - Display sizes track slightly tight (−0.015em to −0.005em). The eyebrow tracks at 0: no spaced-out capitals.
 
 ### Measure and alignment

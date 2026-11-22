@@ -9,8 +9,9 @@ These instructions apply only when a user hands you AISloop. They don't apply to
 1. **[`preferences.md`](preferences.md)**: the owner's taste. It wins over every other file here.
 2. **[`foundations/README.md`](foundations/README.md)**: the map of the foundation rules and the list of choices you make per project.
 3. **The foundation files your task touches** (`foundations/*.md`). For any visual work that means at least typography, colour, layout-and-spacing and accessibility.
-4. **[`tokens/tokens.css`](tokens/tokens.css)**: every value as a CSS custom property. Build with these, never with raw numbers. Tailwind projects: [`tokens/tailwind.preset.js`](tokens/tailwind.preset.js).
-5. **[`examples/foundations/index.html`](examples/foundations/index.html)**: a page built only from the tokens (an app settings screen and a landing hero). Read it to see the rules applied.
+4. **The pattern that matches your screen**, if there is one ([`patterns/README.md`](patterns/README.md) lists them: settings, list–detail, landing page). When none matches, compose from the foundations.
+5. **[`tokens/tokens.css`](tokens/tokens.css)**: every value as a CSS custom property. Build with these, never with raw numbers. Tailwind projects: [`tokens/tailwind.preset.js`](tokens/tailwind.preset.js).
+6. **The live examples**: [`examples/foundations/index.html`](examples/foundations/index.html) (an app settings screen and a landing hero) and [`examples/patterns/list-detail.html`](examples/patterns/list-detail.html), both built only from the tokens. Read them to see the rules applied.
 
 Read when you need them:
 - [`decisions.md`](decisions.md): why things are the way they are.

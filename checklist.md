@@ -7,7 +7,7 @@ Check these yourself, in a real browser, on the real result. A screenshot you ha
 - [ ] Light and dark, at about 390px (phone) and 1440px (desktop). Also 320px: nothing scrolls sideways.
 - [ ] Nothing is clipped, overlapping or crowded. Labels wrap instead of being cut off.
 - [ ] Alignment holds: edges line up, list rows line up like a list, gaps that look equal are the same token.
-- [ ] Each screen has one clear main action, and only it carries the accent.
+- [ ] Each screen has one clear main action. At most one accent-filled button per screen; app screens often have none, because bar actions are borderless icons.
 - [ ] The thing a user acts on looks like an object (a button or a row with a shape and a hit area), not a bare coloured link.
 
 ## Tokens and rules

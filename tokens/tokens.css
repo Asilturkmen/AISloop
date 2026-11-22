@@ -60,7 +60,7 @@
   /* Display scale for landing and product pages (D-009). Fluid between a
      390px phone and a ~1440px desktop; rem limits keep text zoom working.
      Tight leading for big type (DocC headlines use 1.08-1.15). Weights and
-     tracking are ours; to be confirmed on the round-2 board. */
+     tracking are ours; the headline weight is a project choice (D-010). */
   --text-display-1-size: clamp(2.75rem, 1.5rem + 4.6vw, 5.5rem);    /* 44 -> 88px: hero headline (Web: apple.com 70-88) */
   --text-display-1-leading: 1.05;
   --text-display-1-weight: var(--weight-bold);

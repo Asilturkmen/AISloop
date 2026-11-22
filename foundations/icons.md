@@ -57,6 +57,7 @@ Use the familiar metaphor. Phosphor names for Apple's standard action symbols:
 | Print | `printer` | Calendar | `calendar-blank` |
 | Like / Dislike | `thumbs-up` / `thumbs-down` | Alarm | `alarm` |
 | Bold / Italic / Underline | `text-b` / `text-italic` / `text-underline` | Align left | `text-align-left` |
+| File (generic) | `file` | PDF / Image / Archive / Document | `file-pdf` / `file-image` / `file-zip` / `file-doc` |
 
 ## Web translation
 

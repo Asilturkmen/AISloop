@@ -1,0 +1,729 @@
+<!doctype html>
+<!--
+  Kestrel is a fictional product (a field notebook for wildlife surveyors).
+  This page is the AISloop list-detail example: patterns/list-detail.md.
+  Query parameters: ?theme=light|dark  ?density=compact  ?selection=accent
+                    ?empty=selection|list
+  Narrow screens use the URL hash: #/moorland-2026 and #/moorland-2026/<note-id>.
+-->
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Kestrel: Moorland 2026</title>
+<meta name="description" content="Kestrel is a fictional note-taking app for field researchers. This page is the AISloop list-detail example.">
+<link rel="stylesheet" href="../../tokens/tokens.css">
+<!-- Icons: Phosphor Icons (MIT), regular weight, official web package pinned to 2.1.1 -->
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+/* AISloop tokens only: no literal colours, type sizes, radii or durations.
+   Raw px appear only for layout proportions (pane widths, breakpoints). */
+
+*, *::before, *::after { box-sizing: border-box; }
+html { -webkit-text-size-adjust: 100%; }
+body {
+  margin: 0; overflow: hidden;
+  background: var(--color-bg); color: var(--color-label);
+  font: var(--text-body); letter-spacing: var(--text-body-tracking);
+  -webkit-font-smoothing: antialiased;
+}
+h1, h2, h3, p, ul { margin: 0; }
+button, input { font: inherit; letter-spacing: inherit; color: inherit; }
+button { cursor: pointer; }
+[hidden] { display: none !important; }
+i.ph, i.ph-fill { font-size: var(--icon-size); line-height: 1; flex: none; }
+:focus-visible { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+.visually-hidden { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; overflow: clip; clip-path: inset(50%); white-space: nowrap; border: 0; }
+
+/* ---------- Split view ---------- */
+.split {
+  position: relative; overflow: hidden; height: 100dvh;
+  display: grid;
+  grid-template-columns: var(--sidebar-width) clamp(320px, 30vw, 400px) minmax(0, 1fr);
+}
+.pane { position: relative; display: flex; flex-direction: column; min-width: 0; min-height: 0; background: var(--color-bg); }
+.pane-sources { background: var(--color-bg-sidebar); border-inline-end: 1px solid var(--color-separator); }
+.pane-detail { border-inline-start: 1px solid var(--color-separator); }
+.scroll { flex: 1; min-height: 0; overflow: auto; overscroll-behavior: contain; }
+
+.bar {
+  flex: none; display: flex; align-items: center; gap: var(--space-4);
+  min-height: var(--bar-height); padding-inline: var(--space-8);
+  border-bottom: 1px solid var(--color-separator);
+}
+.bar h2, .bar .brand {
+  flex: 1; min-width: 0; padding-inline: var(--space-8);
+  font: var(--text-headline); letter-spacing: var(--text-headline-tracking);
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+}
+.bar .brand { display: flex; align-items: center; gap: var(--space-8); }
+.bar .spacer { flex: 1; min-width: 0; }
+.icon-btn {
+  display: inline-grid; place-items: center; flex: none;
+  min-width: var(--hit-min); height: var(--bar-item-height); padding: 0 var(--space-8);
+  background: none; border: 0; border-radius: var(--radius-control); color: var(--color-label);
+  transition: background-color var(--duration-short) var(--ease-out);
+}
+.icon-btn:hover { background: var(--color-fill-hover); }
+.icon-btn:active { background: var(--color-fill-selected); }
+.back-btn {
+  display: none; align-items: center; gap: var(--space-4); flex: 0 1 auto; min-width: 0;
+  min-height: var(--bar-item-height); padding: 0 var(--space-8) 0 var(--space-4);
+  background: none; border: 0; border-radius: var(--radius-control); color: var(--color-accent-text);
+}
+.back-btn span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.back-btn:hover { background: var(--color-fill-hover); }
+
+/* ---------- Sidebar ---------- */
+.pane-sources .scroll { padding: var(--space-16) var(--space-12) var(--space-24); }
+.side-group + .side-group { margin-top: var(--space-16); }
+.side-group h2 { font: var(--text-footnote); font-weight: var(--text-footnote-weight-emphasized); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); padding: var(--space-8) var(--space-12); }
+.side-list { list-style: none; padding: 0; display: grid; gap: var(--space-2); }
+.side-item {
+  display: flex; align-items: center; gap: var(--space-12);
+  min-height: var(--row-height-sidebar); padding: var(--space-4) var(--space-12);
+  border-radius: var(--radius-selection); color: inherit; text-decoration: none;
+}
+.side-item:hover { background: var(--color-fill-hover); }
+.side-item[aria-current="page"] { background: var(--color-fill-selected); font-weight: var(--text-body-weight-emphasized); }
+.side-item i { color: var(--color-label-secondary); }
+.side-item[aria-current="page"] i { color: var(--color-label); }
+.side-item .label { flex: 1; min-width: 0; overflow-wrap: break-word; }
+.side-item .count { font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); font-variant-numeric: tabular-nums; }
+.side-item:focus-visible { outline-offset: calc(-1 * var(--focus-ring-width)); }
+
+.bar-start, .bar-end, .actions { display: flex; align-items: center; gap: var(--space-4); flex: none; }
+.side-item .chev { display: none; margin-inline-end: calc(var(--space-4) * -1); font-size: var(--icon-size-sm); color: var(--color-label-tertiary); }
+
+/* ---------- List ---------- */
+.list-search { flex: none; padding: var(--space-8) var(--space-12); border-bottom: 1px solid var(--color-separator); }
+.search {
+  display: flex; align-items: center; gap: var(--space-8);
+  min-height: var(--control-height); padding-inline: var(--space-12);
+  background: var(--color-fill-tertiary); border-radius: var(--radius-control);
+  color: var(--color-label-secondary);
+}
+.search input { flex: 1; min-width: 0; background: none; border: 0; padding: 0; min-height: var(--control-height); font-size: var(--text-field-size); color: var(--color-label); }
+.search input::placeholder { color: var(--color-label-secondary); opacity: 1; }
+.search input:focus-visible { outline: none; }
+.search input::-webkit-search-cancel-button { display: none; }
+.search:focus-within { outline: var(--focus-ring-width) solid var(--color-focus-ring); outline-offset: var(--focus-ring-offset); }
+.search .clear { display: grid; place-items: center; flex: none; min-width: var(--hit-min); height: var(--control-height); margin-inline-end: calc(-1 * var(--space-12)); background: none; border: 0; border-radius: var(--radius-control); color: var(--color-label-secondary); }
+.search .clear:hover { color: var(--color-label); }
+
+.rows { list-style: none; padding: var(--space-4) var(--space-8) var(--space-16); }
+.row {
+  position: relative;
+  display: grid; grid-template-columns: var(--space-8) minmax(0, 1fr) auto; column-gap: var(--space-8);
+  align-content: center; align-items: start;
+  min-height: max(var(--row-height-2line), var(--hit-min));
+  padding: var(--pad-row-y) var(--pad-row-x);
+  border-radius: var(--radius-selection);
+  cursor: default; -webkit-tap-highlight-color: transparent;
+}
+.row::after { content: ""; position: absolute; bottom: 0; left: calc(var(--pad-row-x) + var(--space-16)); right: var(--pad-row-x); height: 1px; background: var(--color-separator); }
+.row:last-child::after,
+.row:hover::after, .row:has(+ .row:hover)::after,
+.row[aria-selected="true"]::after, .row:has(+ .row[aria-selected="true"])::after { opacity: 0; }
+.row:hover { background: var(--color-fill-hover); }
+.row[aria-selected="true"] { background: var(--color-fill-selected); }
+.row:focus-visible { outline-offset: calc(-1 * var(--focus-ring-width)); }
+.row .dot { grid-column: 1; grid-row: 1; width: var(--space-8); height: var(--space-8); margin-top: calc((var(--text-body-leading) - var(--space-8)) / 2); border-radius: var(--radius-full); }
+.row.unread .dot { background: var(--color-accent); }
+.row .title {
+  grid-column: 2; grid-row: 1;
+  display: -webkit-box; -webkit-box-orient: vertical; -webkit-line-clamp: 2; line-clamp: 2; overflow: hidden;
+  overflow-wrap: break-word;
+  font: var(--text-body); letter-spacing: var(--text-body-tracking);
+}
+.row.unread .title { font-weight: var(--text-body-weight-emphasized); }
+.row time {
+  grid-column: 3; grid-row: 1; white-space: nowrap; font-variant-numeric: tabular-nums;
+  margin-top: calc((var(--text-body-leading) - var(--text-footnote-leading)) / 2);
+  font: var(--text-footnote); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary);
+}
+.row .preview {
+  grid-column: 2 / 4; grid-row: 2; min-width: 0;
+  white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking); color: var(--color-label-secondary);
+}
+
+/* Accent selection (?selection=accent): only the pane with focus shows it */
+[data-selection="accent"] .pane:focus-within .row[aria-selected="true"],
+[data-selection="accent"] .pane-sources:focus-within .side-item[aria-current="page"] { background: var(--color-accent); color: var(--color-on-accent); }
+[data-selection="accent"] .pane:focus-within .row[aria-selected="true"] time,
+[data-selection="accent"] .pane:focus-within .row[aria-selected="true"] .preview,
+[data-selection="accent"] .pane-sources:focus-within .side-item[aria-current="page"] i,
+[data-selection="accent"] .pane-sources:focus-within .side-item[aria-current="page"] .count { color: var(--color-on-accent); }
+[data-selection="accent"] .pane:focus-within .row.unread[aria-selected="true"] .dot { background: var(--color-on-accent); }
+[data-selection="accent"] .pane:focus-within .row[aria-selected="true"]:focus-visible,
+[data-selection="accent"] .pane-sources:focus-within .side-item[aria-current="page"]:focus-visible { outline-color: var(--color-on-accent); }
+
+/* Empty and no-result states */
+.state { display: grid; justify-items: center; text-align: center; gap: var(--space-4); padding: var(--space-48) var(--space-24); }
+.state > i { font-size: calc(var(--icon-size-lg) * 1.6); color: var(--color-label-tertiary); margin-bottom: var(--space-8); }
+.state h3 { font: var(--text-headline); letter-spacing: var(--text-headline-tracking); overflow-wrap: anywhere; }
+.state p { font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking); color: var(--color-label-secondary); max-width: 30ch; }
+.btn {
+  display: inline-flex; align-items: center; justify-content: center; margin-top: var(--space-12);
+  min-height: var(--control-height); padding-inline: var(--space-20);
+  border: 0; border-radius: var(--radius-control);
+  font: var(--text-body); font-weight: var(--text-body-weight-emphasized); letter-spacing: var(--text-body-tracking);
+  transition: background-color var(--duration-short) var(--ease-out);
+}
+.btn-primary { background: var(--color-accent); color: var(--color-on-accent); }
+.btn-primary:hover { background: var(--color-accent-hover); }
+.btn-primary:active { background: var(--color-accent-pressed); }
+.btn-text { background: none; color: var(--color-accent-text); min-height: var(--hit-min); padding-inline: var(--space-12); }
+.btn-text:hover { text-decoration: underline; text-underline-offset: var(--space-4); }
+
+.toast {
+  position: absolute; z-index: 5; left: var(--space-12); right: var(--space-12); bottom: var(--space-12);
+  display: flex; align-items: center; justify-content: space-between; gap: var(--space-12);
+  padding: var(--space-4) var(--space-8) var(--space-4) var(--space-16);
+  background: var(--color-bg-elevated); border-radius: var(--radius-lg); box-shadow: var(--shadow-floating);
+  font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking);
+  animation: fade var(--duration-medium) var(--ease-out) both;
+}
+.toast .btn { margin: 0; }
+@keyframes fade { from { opacity: 0; } }
+
+/* ---------- Detail ---------- */
+.detail-empty { flex: 1; display: grid; place-items: center; padding: var(--space-24); color: var(--color-label-secondary); font: var(--text-body); letter-spacing: var(--text-body-tracking); text-align: center; }
+.detail-body { padding: var(--space-24) var(--gutter) var(--space-64); }
+.doc { max-width: var(--width-prose); margin-inline: auto; font: var(--text-prose); letter-spacing: var(--text-body-tracking); }
+.doc header { margin-bottom: var(--space-24); }
+.doc h2 { font: var(--text-title-2); letter-spacing: var(--text-title-2-tracking); overflow-wrap: break-word; text-wrap: balance; }
+.doc .meta { margin-top: var(--space-8); font: var(--text-subheadline); letter-spacing: var(--text-subheadline-tracking); color: var(--color-label-secondary); }
+.editable { border-radius: var(--radius-xs); }
+.editable:focus-visible { outline: none; } /* the caret is the focus indicator in text-editing areas */
+#d-title:empty::before, #d-body:empty::before { content: attr(data-placeholder); color: var(--color-label-tertiary); }
+#d-body p + p { margin-top: var(--space-16); }
+#d-body, .doc p { text-wrap: pretty; overflow-wrap: break-word; }
+.counts-block { margin-top: var(--space-24); }
+.counts-block h3 { font: var(--text-footnote); font-weight: var(--text-footnote-weight-emphasized); letter-spacing: var(--text-footnote-tracking); color: var(--color-label-secondary); margin-bottom: var(--space-8); }
+.counts { list-style: none; padding: 0; border-top: 1px solid var(--color-separator); }
+.counts li { display: flex; justify-content: space-between; gap: var(--space-16); padding: var(--space-8) 0; border-bottom: 1px solid var(--color-separator); font: var(--text-body); letter-spacing: var(--text-body-tracking); }
+.counts .n { font-variant-numeric: tabular-nums; color: var(--color-label-secondary); }
+
+/* ---------- Tablet: sidebar behind a toggle (700 to 999px) ---------- */
+.scrim { display: none; }
+@media (min-width: 1000px) {
+  .split.sidebar-collapsed { grid-template-columns: clamp(320px, 30vw, 400px) minmax(0, 1fr); }
+  .split.sidebar-collapsed .pane-sources { display: none; }
+}
+@media (min-width: 700px) and (max-width: 999.98px) {
+  .split { grid-template-columns: clamp(320px, 30vw, 400px) minmax(0, 1fr); }
+  .pane-sources {
+    position: fixed; inset: 0 auto 0 0; z-index: 30; width: var(--sidebar-width);
+    opacity: 0; visibility: hidden; transform: translateX(calc(-100% * var(--motion-scale)));
+    transition: opacity var(--duration-long) var(--ease-out), transform var(--duration-long) var(--ease-out), visibility 0s linear var(--duration-long);
+  }
+  .split.sidebar-open .pane-sources { opacity: 1; visibility: visible; transform: none; box-shadow: var(--shadow-overlay); transition-delay: 0s; }
+  .scrim { display: block; position: fixed; inset: 0; z-index: 25; background: var(--color-scrim); opacity: 0; pointer-events: none; transition: opacity var(--duration-long) var(--ease-out); }
+  .split.sidebar-open .scrim { opacity: 1; pointer-events: auto; }
+}
+
+/* ---------- Phone: one pane at a time (< 700px) ---------- */
+@media (max-width: 699.98px) {
+  .split { display: block; }
+  .pane { position: absolute; inset: 0; border: 0; transition: opacity var(--duration-long) var(--ease-out), transform var(--duration-long) var(--ease-out), visibility 0s; }
+  .pane:not(.is-current) { visibility: hidden; opacity: 0; pointer-events: none; transition-delay: 0s, 0s, var(--duration-long); }
+  .pane-sources:not(.is-current), .pane-list:not(.is-current) { transform: translateX(calc(-1 * var(--space-24) * var(--motion-scale))); }
+  .pane-detail:not(.is-current) { transform: translateX(calc(var(--space-24) * var(--motion-scale))); }
+  .back-btn { display: inline-flex; }
+  .toggle-sidebar { display: none; }
+  .bar { padding-inline: var(--space-4); }
+  .bar-list { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr); }
+  .bar-list h2 { text-align: center; padding-inline: var(--space-4); }
+  .bar-list .bar-start { min-width: 0; }
+  .bar-list .bar-end { justify-self: end; }
+  .side-item .chev { display: block; }
+  .detail-body { padding-top: var(--space-16); }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .toast { animation: none; }
+}
+</style>
+</head>
+<body>
+<h1 class="visually-hidden">Kestrel</h1>
+<p class="visually-hidden" id="status" role="status" aria-live="polite"></p>
+
+<div class="split" id="split">
+  <nav class="pane pane-sources" id="sources" aria-label="Library and notebooks">
+    <header class="bar"><p class="brand"><i class="ph ph-bird" aria-hidden="true"></i>Kestrel</p></header>
+    <div class="scroll">
+      <div class="side-group">
+        <h2 id="sg-library">Library</h2>
+        <ul class="side-list" aria-labelledby="sg-library">
+          <li><a class="side-item" href="#/all-notes"><i class="ph ph-notebook" aria-hidden="true"></i><span class="label">All notes</span><span class="count">214</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+          <li><a class="side-item" href="#/sightings"><i class="ph ph-binoculars" aria-hidden="true"></i><span class="label">Sightings</span><span class="count">63</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+          <li><a class="side-item" href="#/transects"><i class="ph ph-path" aria-hidden="true"></i><span class="label">Transects</span><span class="count">18</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+          <li><a class="side-item" href="#/photos"><i class="ph ph-image" aria-hidden="true"></i><span class="label">Photos</span><span class="count">97</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+        </ul>
+      </div>
+      <div class="side-group">
+        <h2 id="sg-books">Notebooks</h2>
+        <ul class="side-list" aria-labelledby="sg-books">
+          <li><a class="side-item" href="#/moorland-2026"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Moorland 2026</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+          <li><a class="side-item" href="#/wetland-survey"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Wetland survey</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+          <li><a class="side-item" href="#/coastal-cliff-transects"><i class="ph ph-folder" aria-hidden="true"></i><span class="label">Coastal cliff transects, spring season</span><i class="ph ph-caret-right chev" aria-hidden="true"></i></a></li>
+        </ul>
+      </div>
+    </div>
+  </nav>
+
+  <section class="pane pane-list" id="list-pane" aria-labelledby="list-title">
+    <header class="bar bar-list">
+      <div class="bar-start">
+        <button class="back-btn" id="list-back" type="button" aria-label="Back to Kestrel"><i class="ph ph-caret-left" aria-hidden="true"></i><span>Kestrel</span></button>
+        <button class="icon-btn toggle-sidebar" id="toggle-sidebar" type="button" aria-label="Hide sidebar" aria-expanded="true" aria-controls="sources"><i class="ph ph-sidebar-simple" aria-hidden="true"></i></button>
+      </div>
+      <h2 id="list-title">Moorland 2026</h2>
+      <div class="bar-end">
+      <button class="icon-btn" id="search-btn" type="button" aria-label="Search notes" aria-expanded="false" aria-controls="list-search" aria-keyshortcuts="/"><i class="ph ph-magnifying-glass" aria-hidden="true"></i></button>
+      <button class="icon-btn" id="new-btn" type="button" aria-label="New note"><i class="ph ph-note-pencil" aria-hidden="true"></i></button>
+      </div>
+    </header>
+    <div class="list-search" id="list-search" hidden>
+      <div class="search" role="search">
+        <i class="ph ph-magnifying-glass" aria-hidden="true"></i>
+        <label class="visually-hidden" for="q">Search notes</label>
+        <input id="q" type="search" placeholder="Search notes" autocomplete="off" spellcheck="false">
+        <button class="clear" id="q-clear" type="button" aria-label="Clear search" hidden><i class="ph-fill ph-x-circle" aria-hidden="true"></i></button>
+      </div>
+    </div>
+    <div class="scroll" id="list-scroll">
+      <ul class="rows" id="rows" role="listbox" aria-label="Notes"></ul>
+      <div class="state" id="list-state" hidden></div>
+    </div>
+    <div class="toast" id="toast" hidden><span>Note deleted</span><button class="btn btn-text" id="undo" type="button">Undo</button></div>
+  </section>
+
+  <article class="pane pane-detail" id="detail-pane" aria-label="Note">
+    <header class="bar">
+      <button class="back-btn" id="detail-back" type="button" aria-label="Back to Moorland 2026"><i class="ph ph-caret-left" aria-hidden="true"></i><span>Moorland 2026</span></button>
+      <span class="spacer"></span>
+      <div class="actions" id="actions">
+      <button class="icon-btn" id="pin-btn" type="button" aria-label="Pin note" aria-pressed="false"><i class="ph ph-push-pin" aria-hidden="true"></i></button>
+      <button class="icon-btn" id="trash-btn" type="button" aria-label="Delete note"><i class="ph ph-trash" aria-hidden="true"></i></button>
+      <button class="icon-btn" type="button" aria-label="Share note"><i class="ph ph-export" aria-hidden="true"></i></button>
+      <button class="icon-btn" type="button" aria-label="More actions"><i class="ph ph-dots-three" aria-hidden="true"></i></button>
+      </div>
+    </header>
+    <p class="detail-empty" id="detail-empty" hidden>No note selected</p>
+    <div class="scroll" id="detail-scroll">
+      <div class="detail-body">
+        <div class="doc">
+          <header>
+            <h2><span class="editable" id="d-title" contenteditable="true" role="textbox" aria-label="Title" data-placeholder="Untitled note" spellcheck="false"></span></h2>
+            <p class="meta" id="d-meta"></p>
+          </header>
+          <div class="editable" id="d-body" contenteditable="true" role="textbox" aria-multiline="true" aria-label="Note text" data-placeholder="Start writing"></div>
+          <section class="counts-block" id="d-counts" hidden>
+            <h3 id="d-counts-title"></h3>
+            <ul class="counts" id="d-counts-list" aria-labelledby="d-counts-title"></ul>
+          </section>
+        </div>
+      </div>
+    </div>
+  </article>
+  <div class="scrim" id="scrim"></div>
+</div>
+
+<script>
+(function () {
+  'use strict';
+  var root = document.documentElement;
+  var params = new URLSearchParams(location.search);
+  var t = params.get('theme'); if (t === 'light' || t === 'dark') root.setAttribute('data-theme', t);
+  if (params.get('density') === 'compact') root.setAttribute('data-density', 'compact');
+  if (params.get('selection') === 'accent') root.setAttribute('data-selection', 'accent');
+
+  /* ---------- Data. Today is Sunday 22 November 2026. ---------- */
+  var TODAY = Date.UTC(2026, 10, 22);
+  var MONTHS = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  var DAYS = ['Sunday','Monday','Tuesday','Wednesday','Thursday','Friday','Saturday'];
+
+  var notes = [
+    { id: 'n-2841', iso: '2026-11-22T09:41', title: 'North gate, morning count', place: 'North gate, SE 7120 9485', weather: 'Overcast, 5\u00A0°C, wind NW 3', kinds: ['sighting'],
+      preview: 'Two kestrels over the east ridge, wind NW 3, visibility good.',
+      paras: ['Started the count at 08:50 from the gate post. Cloud base about 300\u00A0m, no rain, visibility to the far wall of Hollin Moss. The wind has backed to the north-west since yesterday and is holding at force 3, enough to keep the kestrels hovering over the east ridge instead of hunting the heather edge.',
+              'Two kestrels hunting together from 09:05, one male and one female, working the same slope for about twenty minutes. The male took something small at 09:24 but I could not see what. No merlin today. The hen harrier roost watch is still planned for this afternoon.'],
+      countsTitle: 'First hour from the gate, 08:50 to 09:50', counts: [['Red grouse', 14], ['Meadow pipit', 9], ['Raven', 3], ['Kestrel', 2], ['Stonechat', 1]] },
+    { id: 'n-2840', iso: '2026-11-22T08:15', unread: true, title: 'Heather burn plot 4: recovery check', place: 'Plot 4, SE 7088 9441', weather: 'Overcast, 4\u00A0°C, wind NW 2', kinds: ['photo'],
+      preview: 'Fresh growth about 6\u00A0cm on the 2024 burn, no sign of grazing damage.',
+      paras: ['Walked the four corner posts and the diagonal. Fresh heather growth averages about 6\u00A0cm on the 2024 burn, with bilberry coming back along the drier west edge. No sign of sheep or deer grazing inside the fence.',
+              'Photographed all four corners and the centre post from the same standing points as last month. Quadrat counts below are heather seedlings per quarter-metre square.'],
+      countsTitle: 'Heather seedlings per quadrat', counts: [['A1', 41], ['A2', 38], ['A3', 52], ['A4', 29]] },
+    { id: 'n-2839', iso: '2026-11-22T07:32', title: 'Frost on the access track', place: 'Access track, SE 7140 9498', weather: 'Clear, −2\u00A0°C, wind calm', kinds: [],
+      preview: 'Ground hard until 08:30, so the start of the transect slipped by forty minutes.',
+      paras: ['Ground frozen hard until about 08:30 and the track below the gate is glazed in places. Left the vehicle at the cattle grid and walked up. Transect start moved from 08:10 to 08:50.',
+              'Clear sky and no wind at first light, which should give good visibility for the count later.'] },
+    { id: 'n-2838', iso: '2026-11-21T16:50', unread: true, title: 'Hen harrier roost, evening watch', place: 'Hollin Moss, SE 6952 9377', weather: 'Clear, 3\u00A0°C, wind W 2', kinds: ['sighting'],
+      preview: 'Ringtail in from the south-west at 15:58, one male dropped into the rushes at 16:07.',
+      paras: ['Watched from the lay-by wall from 14:45 until light failed at 16:40. First ringtail came in low from the south-west at 15:58 and dropped into the rushes on the north side. A second followed at 16:03, and a grey male at 16:07.',
+              'A merlin crossed the roost at 16:20 and flushed a few meadow pipits but did not disturb the harriers. One short-eared owl was hunting the rough grass beyond the beck from 15:30.'],
+      countsTitle: 'Roost arrivals', counts: [['Hen harrier, ringtail', 2], ['Hen harrier, male', 1], ['Merlin', 1], ['Short-eared owl', 1]] },
+    { id: 'n-2837', iso: '2026-11-21T11:20', title: 'Red grouse count, Whin Moss', place: 'Whin Moss, SE 7003 9520', weather: 'Bright, 6\u00A0°C, wind SW 3', kinds: ['sighting'],
+      preview: 'Forty-one birds on the 1.2\u00A0km line, mostly coveys of five to eight near the burn edge.',
+      paras: ['Walked the 1.2\u00A0km line from the shooting butt to the burn with the dog on a lead. Forty-one birds in eight coveys, mostly five to eight birds near the burn edge where the heather is shortest.',
+              'That is up on the October count of thirty-three. Two coveys flushed early because of a walker on the bridleway at 11:35.'] },
+    { id: 'n-2836', iso: '2026-11-20T13:05', title: 'Transect B3 to B7 between the old quarry, the stone wall corner and the Hollin Beck crossing, repeated after the storm', place: 'Transect B, SE 6990 9410 to SE 7050 9460', weather: 'Showers, 7\u00A0°C, wind W 4', kinds: ['transect'],
+      preview: 'Overnight gusts took down the marker at B5; re-pinned with GPS and photographed.',
+      paras: ['Repeated the five stations after last night’s gusts. The marker at B5 was down and had moved about 4\u00A0m downslope. Re-pinned it on the original coordinates and photographed both positions.',
+              'Showers every twenty minutes or so, wind W 4 on the exposed section between B5 and B6, which probably kept the small birds low. Counts are five minutes per station.'],
+      countsTitle: 'Birds per station', counts: [['B3', 6], ['B4', 4], ['B5', 9], ['B6', 3], ['B7', 7]] },
+    { id: 'n-2835', iso: '2026-11-19T10:40', title: 'Merlin on the fence line', place: 'East fence, SE 7172 9468', weather: 'Bright, 4\u00A0°C, wind NE 2', kinds: ['sighting', 'photo'],
+      preview: 'Female merlin on the third post from the corner, left at 10:52 low over the heather.',
+      paras: ['Female merlin on the third post from the north-east corner, first seen at 10:40 through the scope. Stayed for twelve minutes, then left low and fast over the heather towards Whin Moss.',
+              'Two photographs taken at 100\u00A0m. Plumage fits an adult female, no rings seen.'] },
+    { id: 'n-2834', iso: '2026-11-18T14:10', unread: true, title: 'Stonechat pairs near the quarry', place: 'Old quarry, SE 6978 9425', weather: 'Overcast, 6\u00A0°C, wind S 2', kinds: ['sighting'],
+      preview: 'Three pairs along the quarry wall; none of the males carry rings.',
+      paras: ['Three pairs holding winter territories along the quarry wall and the gorse above it, about 80\u00A0m apart. The males are calling from the top of the gorse; none of the birds carry rings.',
+              'Same three territories as last winter, as far as the notes from 2025 show.'] },
+    { id: 'n-2833', iso: '2026-11-17T09:20', title: 'Camera trap card swap, ridge east', place: 'Ridge east, SE 7165 9510', weather: 'Fog, 3\u00A0°C, wind calm', kinds: ['photo'],
+      preview: 'Cards swapped on cameras 2 and 4. Camera 3 battery at 12 per cent, replaced.',
+      paras: ['Swapped the cards on cameras 2 and 4 and the batteries on camera 3, which had dropped to 12 per cent. Camera 1 is still facing the right way after the wind. Fog until about 10:30, so no birds to count.',
+              'Cards are labelled and in the dry bag. Review on Thursday.'] },
+    { id: 'n-2832', iso: '2026-11-16T15:30', title: 'Rain gauge and weather log', place: 'Field station, SE 7104 9402', weather: 'Rain from 14:00, 8\u00A0°C, wind SW 5', kinds: [],
+      preview: 'Gauge at 11.4\u00A0mm since Friday. Heavy rain from 14:00 stopped the afternoon survey.',
+      paras: ['Rain gauge at 11.4\u00A0mm since Friday morning. Heavy rain from 14:00 with wind SW 5, so the afternoon survey was called off at 14:20.',
+              'Max-min thermometer reset: 3\u00A0°C overnight low, 9\u00A0°C high.'] },
+    { id: 'n-2831', iso: '2026-11-14T16:25', title: 'Short-eared owl at dusk', place: 'Low Moss, SE 7031 9366', weather: 'Dry, 2\u00A0°C, wind N 1', kinds: ['sighting', 'photo'],
+      preview: 'One bird quartering the rough grass from 15:50, perched on a post twice.',
+      paras: ['One bird quartering the rough grass below the wall from 15:50. It perched on the same fence post twice, at 16:05 and 16:18, and was still hunting when I left at 16:25.',
+              'Light too low for photographs after 16:10.'] },
+    { id: 'n-2830', iso: '2026-11-06T11:00', title: 'Meadow pipit flock, Low Moss', place: 'Low Moss, SE 7031 9366', weather: 'Bright, 9\u00A0°C, wind SE 2', kinds: ['sighting'],
+      preview: 'About sixty moving south in loose groups, with a few skylark among them.',
+      paras: ['About sixty meadow pipits moving south over Low Moss between 10:40 and 11:20 in loose groups of five to fifteen. At least four skylarks with them, calling in flight.'] },
+    { id: 'n-2829', iso: '2026-10-29T08:45', title: 'Season start: plot markers and gate keys', place: 'Field station, SE 7104 9402', weather: 'Mist, 7\u00A0°C, wind calm', kinds: [],
+      preview: 'Eleven plot markers checked against the 2025 grid, two replaced, gate key logged out.',
+      paras: ['Checked all eleven plot markers against the 2025 grid. Two replaced (plots 7 and 9), the rest within 1\u00A0m of the recorded position. Gate key logged out to the survey team.'] }
+  ];
+  notes.forEach(function (n) { n.seed = true; });
+
+  var SOURCES = {
+    'all-notes': { title: 'All notes', filter: function () { return true; } },
+    'sightings': { title: 'Sightings', filter: function (n) { return n.kinds.indexOf('sighting') > -1; } },
+    'transects': { title: 'Transects', filter: function (n) { return n.kinds.indexOf('transect') > -1; } },
+    'photos': { title: 'Photos', filter: function (n) { return n.kinds.indexOf('photo') > -1; } },
+    'moorland-2026': { title: 'Moorland 2026', filter: function () { return true; } },
+    'wetland-survey': { title: 'Wetland survey', filter: function () { return false; } },
+    'coastal-cliff-transects': { title: 'Coastal cliff transects, spring season', filter: function () { return false; } }
+  };
+
+  var $ = function (id) { return document.getElementById(id); };
+  var split = $('split'), pSources = $('sources'), pList = $('list-pane'), pDetail = $('detail-pane');
+  var rowsEl = $('rows'), listScroll = $('list-scroll'), listState = $('list-state');
+  var searchBox = $('list-search'), q = $('q'), qClear = $('q-clear'), searchBtn = $('search-btn');
+  var toggleBtn = $('toggle-sidebar'), toast = $('toast'), statusEl = $('status');
+  var dTitle = $('d-title'), dBody = $('d-body'), dMeta = $('d-meta');
+  var mqPhone = matchMedia('(max-width: 699.98px)');
+  var mqTablet = matchMedia('(min-width: 700px) and (max-width: 999.98px)');
+
+  var state = { source: null, selected: null, autoSelect: params.get('empty') !== 'selection', forceEmpty: params.get('empty') === 'list', query: '', screen: 'list', detailId: null, sidebarOpen: false, collapsed: false };
+  var lastDeleted = null, toastTimer = null, nextId = 2842;
+
+  /* ---------- Helpers ---------- */
+  function esc(s) { return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function find(id) { for (var i = 0; i < notes.length; i++) if (notes[i].id === id) return notes[i]; return null; }
+  function parse(iso) { var p = iso.split('T'), d = p[0].split('-').map(Number), tm = p[1].split(':'); return { day: Date.UTC(d[0], d[1] - 1, d[2]), date: d, time: tm[0] + ':' + tm[1] }; }
+  function relDate(iso) {
+    var p = parse(iso), diff = Math.round((TODAY - p.day) / 864e5);
+    if (diff === 0) return p.time;
+    if (diff === 1) return 'Yesterday';
+    if (diff < 7) return DAYS[new Date(p.day).getUTCDay()];
+    return p.date[2] + ' ' + MONTHS[p.date[1] - 1].slice(0, 3);
+  }
+  function longDate(iso) { var p = parse(iso); return DAYS[new Date(p.day).getUTCDay()] + ' ' + p.date[2] + ' ' + MONTHS[p.date[1] - 1] + ' ' + p.date[0]; }
+  function setInert(el, on) { if (on) el.setAttribute('inert', ''); else el.removeAttribute('inert'); }
+  function say(msg) { statusEl.textContent = ''; setTimeout(function () { statusEl.textContent = msg; }, 50); }
+
+  function visibleNotes() {
+    var src = SOURCES[state.source], term = state.query.trim().toLowerCase();
+    return notes.filter(function (n) {
+      if (state.forceEmpty && n.seed) return false;
+      if (!src.filter(n)) return false;
+      if (!term) return true;
+      return (n.title + ' ' + n.preview + ' ' + n.place + ' ' + n.paras.join(' ')).toLowerCase().indexOf(term) > -1;
+    });
+  }
+
+  /* ---------- Routing: #/<source>[/<note>]; #/ is the sources screen ---------- */
+  function parseHash() {
+    var parts = location.hash.replace(/^#\/?/, '').split('/').filter(Boolean);
+    return { source: parts[0] || null, note: parts[1] || null };
+  }
+  function navigate(hash, opts) {
+    var d = (history.state && history.state.d) || 0;
+    if ((opts && opts.replace) || !mqPhone.matches) history.replaceState({ d: d }, '', hash);
+    else history.pushState({ d: d + 1 }, '', hash);
+    applyRoute();
+  }
+  function applyRoute() {
+    var h = location.hash, p = parseHash(), phone = mqPhone.matches;
+    var src = SOURCES[p.source] ? p.source : 'moorland-2026';
+    if (src !== state.source) {
+      state.source = src; state.selected = null; closeSearch(true);
+      renderList(); syncSidebar();
+    }
+    var noteOk = p.note && find(p.note);
+    if (noteOk) { state.selected = p.note; state.autoSelect = true; }
+    if (!state.selected && state.autoSelect && !phone) { var items = visibleNotes(); if (items.length) state.selected = items[0].id; }
+    state.screen = !phone ? 'list' : (h === '#/' || h === '#') ? 'sources' : noteOk ? 'detail' : 'list';
+    syncSelection(); renderDetail(); syncScreen();
+  }
+
+  /* ---------- Rendering ---------- */
+  function rowHTML(n) {
+    return '<li class="row' + (n.unread ? ' unread' : '') + '" role="option" id="' + n.id + '" data-id="' + n.id + '" aria-selected="false" tabindex="-1">' +
+      '<span class="dot" aria-hidden="true"></span>' +
+      '<span class="title">' + (n.unread ? '<span class="visually-hidden">Unread, </span>' : '') + '<span class="t">' + esc(n.title || 'Untitled note') + '</span></span>' +
+      '<time datetime="' + n.iso + '">' + relDate(n.iso) + '</time>' +
+      '<span class="preview">' + esc(n.preview || 'No text yet') + '</span></li>';
+  }
+  function renderList() {
+    var items = visibleNotes(), title = SOURCES[state.source].title, term = state.query.trim();
+    $('list-title').textContent = title;
+    fitBack();
+    rowsEl.setAttribute('aria-label', 'Notes in ' + title);
+    rowsEl.innerHTML = items.map(rowHTML).join('');
+    rowsEl.hidden = !items.length;
+    listState.hidden = !!items.length;
+    if (!items.length) {
+      if (term) {
+        listState.innerHTML = '<i class="ph ph-magnifying-glass" aria-hidden="true"></i><h3>No results for “' + esc(term) + '”</h3><p>Try a species, a place or a grid reference.</p><button class="btn btn-text" id="clear-search" type="button">Clear search</button>';
+      } else {
+        listState.innerHTML = '<i class="ph ph-note" aria-hidden="true"></i><h3>No notes yet</h3><p>Notes you write in ' + esc(title) + ' will show up here.</p><button class="btn btn-primary" id="empty-new" type="button">New note</button>';
+      }
+    }
+    say(term ? (items.length ? items.length + (items.length === 1 ? ' note found' : ' notes found') : 'No results') : '');
+    syncSelection();
+  }
+  function syncSelection() {
+    var opts = rowsEl.children, target = null;
+    for (var i = 0; i < opts.length; i++) {
+      var on = opts[i].id === state.selected;
+      opts[i].setAttribute('aria-selected', on ? 'true' : 'false');
+      if (on) target = opts[i];
+    }
+    if (!target) target = opts[0] || null;
+    for (var j = 0; j < opts.length; j++) opts[j].tabIndex = opts[j] === target ? 0 : -1;
+  }
+  function syncSidebar() {
+    var phone = mqPhone.matches;
+    pSources.querySelectorAll('.side-item').forEach(function (a) {
+      var cur = a.getAttribute('href') === '#/' + state.source, shown = cur && !phone; /* no persistent highlight on the phone sources screen */
+      if (shown) a.setAttribute('aria-current', 'page'); else a.removeAttribute('aria-current');
+      a.tabIndex = cur ? 0 : -1;
+      var i = a.querySelector('i');
+      if (!i.dataset.icon) i.dataset.icon = i.className.split(' ').filter(function (c) { return c.indexOf('ph-') === 0 && c !== 'ph-fill'; })[0];
+      i.className = (shown ? 'ph-fill ' : 'ph ') + i.dataset.icon;
+    });
+  }
+  function fitBack() {
+    var btn = $('detail-back'), span = btn.lastElementChild, title = SOURCES[state.source].title;
+    span.textContent = title; btn.setAttribute('aria-label', 'Back to ' + title);
+    if (mqPhone.matches && span.scrollWidth > span.clientWidth + 1) span.textContent = 'Back';
+  }
+  function scrollToSelected() { var li = state.selected && $(state.selected); if (li) li.scrollIntoView({ block: 'nearest' }); }
+  function renderDetail() {
+    var n = find(state.selected);
+    $('detail-empty').hidden = !!n;
+    $('detail-scroll').hidden = !n;
+    $('actions').hidden = !n;
+    if (!n) { state.detailId = null; return; }
+    syncPin(n);
+    if (state.detailId === n.id) return;
+    state.detailId = n.id;
+    dTitle.textContent = n.title;
+    dBody.innerHTML = n.paras.map(function (s) { return '<p>' + esc(s) + '</p>'; }).join('');
+    dMeta.textContent = [longDate(n.iso), parse(n.iso).time, n.place, n.weather].join(' · ');
+    var c = $('d-counts');
+    c.hidden = !n.counts;
+    if (n.counts) {
+      $('d-counts-title').textContent = n.countsTitle;
+      $('d-counts-list').innerHTML = n.counts.map(function (r) { return '<li><span>' + esc(r[0]) + '</span><span class="n">' + r[1] + '</span></li>'; }).join('');
+    }
+    $('detail-scroll').scrollTop = 0;
+  }
+  function syncPin(n) {
+    var b = $('pin-btn'), i = b.firstElementChild;
+    b.setAttribute('aria-pressed', n.pinned ? 'true' : 'false');
+    i.className = n.pinned ? 'ph-fill ph-push-pin' : 'ph ph-push-pin';
+  }
+  function syncScreen() {
+    var phone = mqPhone.matches, tablet = mqTablet.matches, s = state.screen;
+    split.setAttribute('data-screen', s);
+    pSources.classList.toggle('is-current', s === 'sources');
+    pList.classList.toggle('is-current', s === 'list');
+    pDetail.classList.toggle('is-current', s === 'detail');
+    if (!tablet && state.sidebarOpen) { state.sidebarOpen = false; }
+    var desktop = !phone && !tablet, shown = tablet ? state.sidebarOpen : desktop ? !state.collapsed : false;
+    split.classList.toggle('sidebar-open', state.sidebarOpen);
+    split.classList.toggle('sidebar-collapsed', desktop && state.collapsed);
+    toggleBtn.setAttribute('aria-expanded', shown ? 'true' : 'false');
+    toggleBtn.setAttribute('aria-label', shown ? 'Hide sidebar' : 'Show sidebar');
+    setInert(pSources, phone ? s !== 'sources' : tablet ? !state.sidebarOpen : state.collapsed);
+    setInert(pList, (phone && s !== 'list') || (tablet && state.sidebarOpen));
+    setInert(pDetail, (phone && s !== 'detail') || (tablet && state.sidebarOpen));
+    syncSidebar(); fitBack();
+  }
+
+  /* ---------- Selection ---------- */
+  function choose(id, open) {
+    var n = find(id); if (!n) return;
+    state.selected = id; state.autoSelect = true;
+    if (n.unread) { n.unread = false; var li = $(id); if (li) { li.classList.remove('unread'); var sr = li.querySelector('.visually-hidden'); if (sr) sr.remove(); } }
+    syncSelection(); renderDetail();
+    var h = '#/' + state.source + '/' + id;
+    if (mqPhone.matches) { if (open) navigate(h); }
+    else history.replaceState({ d: (history.state && history.state.d) || 0 }, '', h);
+  }
+  function moveFocus(li) { if (li) { li.focus(); choose(li.dataset.id, false); } }
+
+  rowsEl.addEventListener('click', function (e) { var li = e.target.closest('.row'); if (li) choose(li.dataset.id, true); });
+  rowsEl.addEventListener('keydown', function (e) {
+    var li = e.target.closest('.row'); if (!li) return;
+    var all = Array.prototype.slice.call(rowsEl.children), i = all.indexOf(li);
+    if (e.key === 'ArrowDown') { e.preventDefault(); moveFocus(all[Math.min(i + 1, all.length - 1)]); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); moveFocus(all[Math.max(i - 1, 0)]); }
+    else if (e.key === 'Home') { e.preventDefault(); moveFocus(all[0]); }
+    else if (e.key === 'End') { e.preventDefault(); moveFocus(all[all.length - 1]); }
+    else if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); choose(li.dataset.id, true); if (!mqPhone.matches) dTitle.focus(); }
+    else if (e.key === 'Delete' || e.key === 'Backspace') { e.preventDefault(); deleteNote(li.dataset.id); }
+  });
+
+  /* ---------- Sidebar ---------- */
+  pSources.addEventListener('click', function (e) {
+    var a = e.target.closest('a.side-item'); if (!a) return;
+    e.preventDefault();
+    var wasOpen = state.sidebarOpen; state.sidebarOpen = false;
+    navigate(a.getAttribute('href'));
+    if (wasOpen) toggleBtn.focus();
+  });
+  pSources.addEventListener('keydown', function (e) {
+    var links = Array.prototype.slice.call(pSources.querySelectorAll('.side-item')), i = links.indexOf(document.activeElement);
+    if (i < 0) return;
+    var to = e.key === 'ArrowDown' ? i + 1 : e.key === 'ArrowUp' ? i - 1 : e.key === 'Home' ? 0 : e.key === 'End' ? links.length - 1 : null;
+    if (to === null) return;
+    e.preventDefault(); links[Math.max(0, Math.min(to, links.length - 1))].focus();
+  });
+  function setSidebar(open, restore) {
+    state.sidebarOpen = open; syncScreen();
+    if (open) { var cur = pSources.querySelector('[aria-current]'); (cur || pSources.querySelector('.side-item')).focus(); }
+    else if (restore) toggleBtn.focus();
+  }
+  toggleBtn.addEventListener('click', function () {
+    if (mqTablet.matches) setSidebar(!state.sidebarOpen, true);
+    else { state.collapsed = !state.collapsed; syncScreen(); }
+  });
+  $('scrim').addEventListener('click', function () { setSidebar(false, true); });
+
+  /* ---------- Search ---------- */
+  function openSearch() { searchBox.hidden = false; searchBtn.setAttribute('aria-expanded', 'true'); q.focus(); q.select(); }
+  function closeSearch(silent) {
+    var had = state.query !== '';
+    state.query = ''; q.value = ''; qClear.hidden = true;
+    searchBox.hidden = true; searchBtn.setAttribute('aria-expanded', 'false');
+    if (had && !silent) { renderList(); scrollToSelected(); }
+  }
+  searchBtn.addEventListener('click', function () { if (searchBox.hidden) openSearch(); else { closeSearch(); searchBtn.focus(); } });
+  q.addEventListener('input', function () { state.query = q.value; qClear.hidden = !q.value; renderList(); if (!q.value) scrollToSelected(); });
+  q.addEventListener('keydown', function (e) {
+    if (e.key === 'Escape') { e.preventDefault(); e.stopPropagation(); if (q.value) { q.value = ''; q.dispatchEvent(new Event('input')); } else { closeSearch(); searchBtn.focus(); } }
+    else if (e.key === 'ArrowDown') { var t = rowsEl.querySelector('[tabindex="0"]'); if (t) { e.preventDefault(); t.focus(); } }
+  });
+  qClear.addEventListener('click', function () { q.value = ''; q.dispatchEvent(new Event('input')); q.focus(); });
+  listState.addEventListener('click', function (e) {
+    if (e.target.closest('#clear-search')) { q.value = ''; q.dispatchEvent(new Event('input')); q.focus(); }
+    else if (e.target.closest('#empty-new')) newNote();
+  });
+  document.addEventListener('keydown', function (e) {
+    var tag = (e.target.tagName || '').toLowerCase(), typing = tag === 'input' || tag === 'textarea' || e.target.isContentEditable;
+    if (e.key === '/' && !typing && !e.ctrlKey && !e.metaKey && !e.altKey && !pList.hasAttribute('inert')) { e.preventDefault(); openSearch(); return; }
+    if ((e.ctrlKey || e.metaKey) && !e.shiftKey && e.key.toLowerCase() === 'z' && !typing && lastDeleted) { e.preventDefault(); undoDelete(); return; }
+    if (e.key === 'Escape' && state.sidebarOpen) { e.preventDefault(); setSidebar(false, true); }
+  });
+
+  /* ---------- Actions: new, pin, delete with undo, back ---------- */
+  function newNote() {
+    var n = { id: 'n-' + (nextId++), iso: '2026-11-22T10:32', title: '', place: 'Field station, SE 7104 9402', weather: 'Overcast, 6\u00A0°C, wind NW 3', kinds: [], preview: '', paras: [] };
+    notes.unshift(n); state.forceEmpty = false; state.source = null;
+    navigate('#/moorland-2026/' + n.id);
+    if (mqPhone.matches) { /* navigate pushed only when a note id is in the hash */ }
+    dTitle.focus();
+  }
+  $('new-btn').addEventListener('click', newNote);
+  $('pin-btn').addEventListener('click', function () { var n = find(state.selected); if (n) { n.pinned = !n.pinned; syncPin(n); } });
+  $('trash-btn').addEventListener('click', function () { if (state.selected) deleteNote(state.selected); });
+
+  function deleteNote(id) {
+    var idx = notes.findIndex(function (n) { return n.id === id; }); if (idx < 0) return;
+    var items = visibleNotes(), vi = items.findIndex(function (n) { return n.id === id; });
+    lastDeleted = { note: notes[idx], idx: idx };
+    notes.splice(idx, 1);
+    var next = items[vi + 1] || items[vi - 1] || null;
+    var wasSelected = state.selected === id;
+    if (wasSelected && next) next.unread = false; /* same effect as choose(): opened notes are read */
+    if (wasSelected) { state.selected = next ? next.id : null; state.detailId = null; }
+    renderList(); renderDetail();
+    if (wasSelected && mqPhone.matches && state.screen === 'detail') goBack();
+    else if (wasSelected && !mqPhone.matches) {
+      history.replaceState({ d: (history.state && history.state.d) || 0 }, '', '#/' + state.source + (next ? '/' + next.id : ''));
+      var t = rowsEl.querySelector('[tabindex="0"]'); if (t && pList.contains(document.activeElement) === false) t.focus();
+    }
+    showToast();
+  }
+  function hideToast() { toast.hidden = true; lastDeleted = null; }
+  function armToast() { clearTimeout(toastTimer); toastTimer = setTimeout(hideToast, 8000); }
+  function showToast() { toast.hidden = false; armToast(); say('Note deleted'); }
+  toast.addEventListener('mouseenter', function () { clearTimeout(toastTimer); });
+  toast.addEventListener('focusin', function () { clearTimeout(toastTimer); });
+  toast.addEventListener('mouseleave', function () { if (!toast.contains(document.activeElement)) armToast(); });
+  toast.addEventListener('focusout', function (e) { if (!toast.matches(':hover') && !toast.contains(e.relatedTarget)) armToast(); });
+  $('undo').addEventListener('click', undoDelete);
+  function undoDelete() {
+    if (!lastDeleted) return;
+    clearTimeout(toastTimer);
+    var d = lastDeleted; lastDeleted = null; toast.hidden = true;
+    notes.splice(d.idx, 0, d.note); state.detailId = null;
+    renderList(); choose(d.note.id, false);
+    var li = $(d.note.id); if (li) li.focus();
+  }
+
+  function goBack() {
+    if (history.state && history.state.d > 0) history.back();
+    else navigate(state.screen === 'detail' ? '#/' + state.source : '#/', { replace: true });
+  }
+  $('list-back').addEventListener('click', goBack);
+  $('detail-back').addEventListener('click', goBack);
+  window.addEventListener('popstate', applyRoute);
+
+  /* ---------- In-place editing ---------- */
+  function liveRow(n, key, value, fallback) { var li = $(n.id); if (!li) return; var el = li.querySelector(key); if (el) el.textContent = value || fallback; }
+  dTitle.addEventListener('input', function () { var n = find(state.selected); if (n) { n.title = dTitle.textContent; liveRow(n, '.t', n.title, 'Untitled note'); } });
+  dTitle.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); dBody.focus(); } });
+  dTitle.addEventListener('paste', function (e) { e.preventDefault(); document.execCommand('insertText', false, (e.clipboardData.getData('text/plain') || '').replace(/\s+/g, ' ')); });
+  dBody.addEventListener('paste', function (e) { e.preventDefault(); document.execCommand('insertText', false, e.clipboardData.getData('text/plain')); });
+  dBody.addEventListener('input', function () {
+    var n = find(state.selected); if (!n) return;
+    n.paras = dBody.innerText.split(/\n+/).filter(function (s) { return s.trim(); });
+    n.preview = n.paras[0] || '';
+    liveRow(n, '.preview', n.preview, 'No text yet');
+  });
+
+  /* ---------- Boot ---------- */
+  function onResize() { applyRoute(); }
+  window.addEventListener('resize', fitBack);
+  if (mqPhone.addEventListener) { mqPhone.addEventListener('change', onResize); mqTablet.addEventListener('change', onResize); }
+  history.replaceState({ d: 0 }, '', location.href);
+  applyRoute();
+})();
+</script>
+</body>
+</html>

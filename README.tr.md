@@ -1,12 +1,12 @@
 # AISloop
 
-![Çapraz bir cam ışık bandıyla ikiye ayrılmış bir giriş sayfası. Bandın gerisinde tipik yapay zekâ girişi: neon aurora, parıltılar, parlayan butonlar, birbirinin aynı kartlar. Bandın geçtiği yerde aynı sayfa rafine edilmiş: şafakta sisli dağlar, büyük beyaz AISloop yazısı, tek buton ve tek mavi anahtarlı sakin bir ayarlar kartı.](assets/hero.png)
+![Çapraz bir cam ışık bandıyla ikiye ayrılmış bir tanıtım sayfası. Bandın gerisinde tipik yapay zekâ girişi: neon aurora, parıltılar, parlayan butonlar, birbirinin aynı kartlar. Bandın geçtiği yerde aynı sayfa rafine edilmiş: şafakta sisli dağlar, büyük beyaz AISloop yazısı, tek buton ve tek mavi anahtarlı sakin bir ayarlar kartı.](assets/hero.png)
 
 **Yapay zekâ kodlama ajanlarının daha tek piksel çizmeden okuduğu bir tasarım kural kitabı. Böylece yaptıkları şey yapay zekânın değil, Apple'ın elinden çıkmış gibi görünür.**
 
 [English](README.md)
 
-> **Durum: kullanılabilir.** Bu repoyu bir ajana verdiğinde [`AGENTS.md`](AGENTS.md) dosyasından başlar. Temeller, token'lar, canlı örnek ve kontrol listesi yerinde; sırada kalıplar var. Bkz. [Yol haritası](#yol-haritası).
+> **Durum: kullanılabilir.** Bu repoyu bir ajana verdiğinde [`AGENTS.md`](AGENTS.md) dosyasından başlar. Temeller, token'lar, canlı örnekler ve kontrol listesi yerinde; ilk üç kalıp (ayarlar, liste–detay, tanıtım sayfası) yazıldı ve bir ajanla deneniyor. Bkz. [Yol haritası](#yol-haritası).
 >
 > Kuralların asıl hâli İngilizcedir, çünkü onları okuyacak olan ajanlardır. Bu sayfa Türkçe tanıtımdır.
 
@@ -34,7 +34,7 @@ Sonuç:  Apple'ın kendi yazılımları gibi sakin, anlaşılır ve özenli bir 
 | | Hissi | Nerede |
 |---|---|---|
 | **Uygulama arayüzleri** | Apple'ın kendi uygulamaları: Ayarlar, Notlar, Mail, Finder, Pages | listeler, ayarlar, editörler, paneller |
-| **Ürün ve giriş sayfaları** | apple.com: büyük yazı, güçlü görsel, atmosfer | ürün sayfaları, lansmanlar, giriş sayfaları |
+| **Ürün ve tanıtım sayfaları** | apple.com: büyük yazı, güçlü görsel, atmosfer | ürün sayfaları, lansmanlar, tanıtım sayfaları |
 
 ## Farkı ne
 
@@ -78,15 +78,16 @@ Apple'ın yazı tipleri, ikonları ve UI kitleri yalnız Apple platformları iç
 | [`preferences.md`](preferences.md) | Her kuralın uyduğu zevk profili |
 | [`decisions.md`](decisions.md) | Her karar, tarihi ve gerekçesiyle |
 | [`foundations/`](foundations/) | Kurallar: yazı, renk, koyu mod, yerleşim, köşeler, malzeme, hareket, ikonlar, erişilebilirlik |
+| [`patterns/`](patterns/) | Temeller üzerine kurulu, sık kullanılan ekranlar: ayarlar, liste–detay, tanıtım sayfası |
 | [`tokens/`](tokens/) | Bütün değerler CSS değişkeni olarak, ayrıca Tailwind ön ayarı |
-| [`examples/`](examples/) | Yalnız token'larla yapılmış canlı sayfa: açık ve koyu, iki yoğunlukta |
+| [`examples/`](examples/) | Yalnız token'larla yapılmış canlı sayfalar: açık ve koyu, iki yoğunlukta |
 | [`checklist.md`](checklist.md) | Bir tasarıma "bitti" demeden önce kontrol edilecekler, slop testi dahil |
 | [`templates/`](templates/) | `DESIGN.md`: bir projenin AISloop seçimlerini tuttuğu dosya |
 | [`research/`](research/) | Kanıtlar: HIG özeti, ölçümler, kaynaklar, oy sonuçları |
 | [`tools/`](tools/) | Araştırma ve tasarım doğrulama için ekran görüntüsü aracı |
 | [`apple-native/`](apple-native/) | Yalnız sadece Apple platformları için yapılan uygulamalar (SwiftUI/UIKit). Geri kalan her şey her proje için. |
 
-Kalıplar (ayarlar, liste-detay, formlar, giriş sayfaları…) yol haritası ilerledikçe eklenecek.
+Diğer kalıplar (formlar ve oturum açma, gezinme, diyaloglar…) yol haritası ilerledikçe eklenecek.
 
 ## Yol haritası
 
@@ -96,7 +97,7 @@ Kalıplar (ayarlar, liste-detay, formlar, giriş sayfaları…) yol haritası il
 | 1 | Zevk kalibrasyonu: araştırma, pano, 51 oy | bitti |
 | 2 | Temeller: yazı, renk, boşluk, köşeler, malzeme, hareket → token'lar + canlı örnek sayfa | bitti |
 | 3 | `AGENTS.md` giriş kapısı ve son yapı, yeni bir ajanla denendi | bitti |
-| 4 | Kalıplar tek tek (ayarlar, liste-detay, formlar, giriş sayfası…), her biri gerçek bir projede denenerek | sırada |
+| 4 | Kalıplar tek tek (ayarlar, liste–detay, formlar, tanıtım sayfası…), her biri gerçek bir projede denenerek | sürüyor: ilk üçü yazıldı, deneme bekliyor |
 
 ## Uyarı
 

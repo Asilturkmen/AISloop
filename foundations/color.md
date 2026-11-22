@@ -51,6 +51,7 @@ The owner voted "depends" (p06).
 - **Grey** (`--color-fill-selected`, default): content lists, multi-select, and any screen where the accent already marks the main action.
 - **Accent** (accent fill, `--color-on-accent` for the selected row's text and icon): a single main navigation list (a sidebar) in a focused tool, where the selection is the user's place in the app.
 - One style per app.
+- In a split view with accent selection, only the pane that has keyboard focus shows its selection in accent; the other panes show grey, so the path stays visible ([list–detail](../patterns/list-detail.md#selection)).
 
 ### Text on photos and video
 
